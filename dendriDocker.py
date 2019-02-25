@@ -15,7 +15,8 @@ import os
 
 
 def main():
-    logo=open('asciilogo.txt','r')
+    script_dir = os.path.dirname(__file__)
+    logo=open(script_dir+'/asciilogo.txt','r')
     print(logo.read()[-285:])
     print("\nIt's beeing develop by the MSSM/LabMMol laboratory at IQ/UFRJ.")
     print("More about us in our webpage: https://labmmol.iq.ufrj.br/mssm/ \n")
@@ -30,12 +31,17 @@ def main():
     parser.add_argument('--nligand', help="Number of ligand molecules to be docked", default="10")
     parser.add_argument('--atomInDend', help="Number of atoms in your model dendrimer", default=None)
     parser.add_argument('--atomInLigand', help="Number of atoms in your model ligand", default=None)
-    parser.add_argument('--ligandCoord', help="Path to the ligand coordinates file", default="./ligand.gro")
-    parser.add_argument('--dendCoord', help="Path to the dendrimer coordinates file", default="./dend.gro")
+    parser.add_argument('--ligandCoord', help="Path to the ligand coordinates file", default="ligand.gro")
+    parser.add_argument('--dendCoord', help="Path to the dendrimer coordinates file", default="dend.gro")
     parser.add_argument('--ligandTop', help="Path to the ligand topology file", default="ligand.itp")
     parser.add_argument('--dendTop', help="Path to the dendrimer topology file", default="dend.itp")
     parser.add_argument('--FFPath', help="Path to the forcefield directory", default=None)
+    parser.add_argument('--gmxPath', help="Path to the Gromacs binary file", default='/usr/local/gromacs')
+    parser.add_argument('--mdpPath', help="Path to the mdp files directory", default='./mdp')
     parser.add_argument('--nameOut', help="Output name of the system", default='System')
+    parser.add_argument('--topolOut', help="Output name of the topology file", default='topol.top')
+    parser.add_argument('--dockOut', help="Output name of the docking file", default='plumed_dock.top')
+    parser.add_argument('--runOut', help="Output name of the run file", default='run.sh')
     #parser.add_argument('--walls', help="Number of atoms in your model ligand")
 
     args=vars(parser.parse_args())
@@ -60,6 +66,7 @@ def main():
     prt=printer()
     prt.printPlumedDock(args)
     prt.printTop(args)
+    prt.printSetup(args)
 
 
 def error(message):
