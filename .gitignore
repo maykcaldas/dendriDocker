@@ -3,3 +3,7 @@ __pycache__/
 *.top
 *.dat
 *.sh
+box*
+em*
+ion*
+dock*

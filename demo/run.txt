@@ -1,1 +1,0 @@
-./../__main__.py --ligand=EtOh --nligand=3 --atomInDend=500 --atomInLigand=30 --FFPath=./gromos2016h66.ff

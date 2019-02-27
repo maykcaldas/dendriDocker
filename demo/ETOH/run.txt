@@ -1,0 +1,1 @@
+../../__main__.py --ligand ETOH --nligand 20 --atomInLigand 4 --atomInDend 670 --ligandCoord ./ETOH.pdb --ligandTop ./ETOH.itp --dendCoord ./PAMAM_G3_Acid.gro --dendTop ./PAMAM_G3_Acid.itp --FFPath ../gromos2016h66.ff --nameOut PamamDockEtOH --gmxPath /home/mayk/programs/gromacs-5.1.4/install --host PAMAM --mdpPath=../mdp
