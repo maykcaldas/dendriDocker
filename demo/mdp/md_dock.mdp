@@ -1,8 +1,8 @@
 title		= PAMAM Dendrimer G0 in Basic environment simulation 
 ; Run parameters
 integrator	= md		; leap-frog integrator
-nsteps		= 250000			; 0.4 * 250000 = 100000 fs = 100 ps = 0.1 ns
-dt		    = 0.0004				; 0.4 fs
+nsteps		= 20000			; 0.5 * 20000 = 10000 fs = 10 ps
+dt		    = 0.0005				; 0.4 fs
 ; Output control
 nstxout		        = 5000		; save coordinates every 10.0 ps
 nstvout		        = 500000		; save velocities every 10.0 ps

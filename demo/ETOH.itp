@@ -1,0 +1,25 @@
+[ moleculetype ]
+; Name   nrexcl
+etOH    2
+
+[ atoms ]
+;  nr  type  resnr  resid  atom  cgnr  charge    mass    total_charge
+    1   H       1   ETOH    HA1    1     0.41   1.00800
+    2   OA      1   ETOH    OA2    1     -0.7   15.99940
+    3   CH2     1   ETOH    CA3    1     0.29   14.02700
+    4   CH3     1   ETOH    CA4    1     0.0    15.03500
+
+[ bonds ]
+;  ai   aj  funct   c0         c1 
+    1   2           2       gb_1
+    2   3           2       gb_18
+    3   4           2       gb_27
+
+[ angles ]
+;  ai   aj   ak  funct   angle     fc
+    1   2   3           2       ga_12
+    2   3   4           2       ga_15
+
+[ dihedrals ]
+;  ai   aj   ak   al  funct    ph0      cp     mult
+    1   2   3   4               1       gd_23
