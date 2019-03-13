@@ -19,7 +19,7 @@ def main():
     script_dir = os.path.dirname(__file__)
     logo=open(script_dir+'/asciilogo.txt','r')
     print(logo.read()[-285:])
-    print("\nIt's beeing develop by the MSSM/LabMMol laboratory at IQ/UFRJ.")
+    print("\nIt's beeing developed by the MSSM/LabMMol laboratory at IQ/UFRJ.")
     print("More about us in our webpage: https://labmmol.iq.ufrj.br/mssm/ \n")
     print("You need to have the topology and the coordinates files as well as the gromacs and plummed installed\n")
     print("in way to use this software.\n")
@@ -52,7 +52,7 @@ def main():
     noneInArgs=False
     for k in args:
         if args[k] is None:
-            print("The {0} should be defined.".format(k))
+            print("The {0:^15s} should be defined.".format(k))
             noneInArgs=True
     if noneInArgs == True:
         error("There were some undefined variables.")
