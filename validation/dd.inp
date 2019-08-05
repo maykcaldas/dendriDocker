@@ -1,0 +1,13 @@
+  --host PAMAM      
+  --ligand 2S04    
+  --nligand 100   
+  --atomInDend  1312 
+  --atomInLigand 12  
+  --ligandCoord 5fluorouracil.pdb 
+  --dendCoord PAMAM_G4_Neutral.gro
+  --ligandTop 5fluorouracil.itp
+  --dendTop PAMAM_G4_Neutral.itp
+  --FFPath ../../../gromos2016h66.ff
+  --gmxPath ~/programs/gromacs-5.1.4/install
+  --mdpPath ../../../mdp 
+

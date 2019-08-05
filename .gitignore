@@ -2,8 +2,15 @@ __pycache__/
 *.pyc
 *.top
 *.dat
-*.sh
+run.sh
 box*
 em*
 ion*
 dock*
+solv*
+bck*
+npt*
+nvt*
+md*
+\#*
+validation/**/tmp
