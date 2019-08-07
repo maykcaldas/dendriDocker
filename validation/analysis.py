@@ -1,8 +1,8 @@
 #!/bin/python3
 
 import os
-#import numpy as np
-#import matplotlib as plot
+import numpy as np
+import matplotlib.pyplot as plt
 
 #####   creating .gro  ###############
 # # os.system("echo Dendrimer | $gmx514 trjconv -f md.xtc \
@@ -29,14 +29,13 @@ def index(ligand_case):
 
 def calculate_gyrate(outputName="gyrate.xvg", ff=0, lf=0):
     os.system("echo Dendrimer | gmx gyrate  -s md.tpr \
-                                            -f md.trr \
+                                            -f md.xtc \
                                             -n index.ndx \
                                             -b {ff} \
                                             -e {lf} \
                                             -o {output}".format(output=outputName, ff=ff, lf=lf))
-    os.system("mv foo bar")
-
-    file = open(outputName,'r')
+    os.system("pwd")
+    file = open(outputName+".xvg",'r')
 
     Rg, Rg_x, Rg_y, Rg_z = 0,0,0,0
     Rg2, Rg_x2, Rg_y2, Rg_z2 = 0,0,0,0
@@ -59,7 +58,7 @@ def calculate_gyrate(outputName="gyrate.xvg", ff=0, lf=0):
             Rg_z2+=float(line_elements[4])*float(line_elements[4])
 
     Rgm   = Rg/count
-    Rg_dp = (Rg2/count - (Rg/count)**2 )**0.5
+    Rgm_dp = (Rg2/count - (Rg/count)**2 )**0.5
     Rg_xm = Rg_x/count
     Rg_xm_dp = (Rg_x2/count - (Rg_x/count)**2 )**0.5
     Rg_ym = Rg_y/count
@@ -69,24 +68,25 @@ def calculate_gyrate(outputName="gyrate.xvg", ff=0, lf=0):
 
     file.close()
 
-    print("Rg:  ", Rgm, "+/-", Rg_dp)
+    print("Rg:  ", Rgm, "+/-", Rgm_dp)
     print("Rgx: ", Rg_xm, "+/-", Rg_xm_dp)
     print("Rgy: ", Rg_ym, "+/-", Rg_ym_dp)
     print("Rgz: ", Rg_zm, "+/-", Rg_zm_dp)
 
+    return ((Rgm, Rgm_dp),(Rg_xm, Rg_xm_dp),(Rg_ym, Rg_ym_dp),(Rg_zm, Rg_zm_dp))
 
 def calculate_delta():
     # O ALGORITMO DE CALCULO DO MOMENTO DE INERCIA DO GROMACS TÁ BUGADO.
     # USAR MINHA ROTINA DE CÁLCULO DO DELTA
+    # Ela precisa ler um .gro. Não sei se eu quero fazer isso
 
     os.system("echo Dendrimer | gmx gyrate  -moi \
                                             -s md.tpr \
-                                            -f md.trr \
+                                            -f md.xtc \
                                             -n index.ndx \
                                             -b {ff} \
                                             -e {lf} \
                                             -o moi.xvg".format(ff=ff, lf=lf))
-    os.system("mv foo bar")
 
     #calculate mean values
 
@@ -105,7 +105,7 @@ def rdf(outputName="rdf.xvg", ff=0, lf=0):
 
     # Plot rdf
 
-def distance(outputName="distances.xvg", ff=0, lf=0):
+def distance(outputName="distances.xvg", ff=0, lf=0, Rgm=0):
     os.system("gmx pairdist -f md.xtc \
                             -s md.tpr \
                             -n index.ndx \
@@ -118,8 +118,7 @@ def distance(outputName="distances.xvg", ff=0, lf=0):
                             -selgrouping res \
                             -o {output}".format(output=outputName, ff=ff, lf=lf))
 
-    file = open(outputName,'r')
-
+    file = open(outputName+".xvg",'r')
     time=[]
     ligands_n=[]
     Rg=Rgm
@@ -133,64 +132,70 @@ def distance(outputName="distances.xvg", ff=0, lf=0):
                     count+=1
             time.append(t)
             ligands_n.append(count)
-
     file.close()
 
-    print(time)
-    print(ligands_n)
+    return time, ligands_n
 
 
 def clean(list):
     trash=""
     for c in list:
-        trash+=x+" "
+        trash+=c+" "
     os.system("rm {}".format(trash))
 
 def main():
     ff=0
-    lf=1000
+    lf=50000
+    root="/home/mayk/Documents/Labmmol/Dendrimer/dendriDocker/validation"
 
     cases={
         "5-Fluorouracil" : [4, 5],
-        "Carbamazepine" : [4],
-        "Quercetin" : [0, 1, 2, 3],
-        "Methotrexate" : [4],
-        "SilybinA" : [2, 3, 4],
+        # "Carbamazepine" : [4],
+        # "Quercetin" : [0, 1, 2, 3],
+        # "Methotrexate" : [4],
+        # "SilybinA" : [2, 3, 4],
     }
     ligand={
         "5-Fluorouracil" : "2S04",
-        "Carbamazepine" : "",
-        "Quercetin" : "",
-        "Methotrexate" : "",
-        "SilybinA" : "",
+        "Carbamazepine" : "BDRM",
+        "Quercetin" : "VV98",
+        "Methotrexate" : "6QRE",
+        "SilybinA" : "SYLI",
     }
 
-    #os.system("gmx514") GROMACS 5.1.4
-    print(cases)
+    #os.system("gmx514") #Sourcing GROMACS 5.1.4
 
     for case in cases:
         for G in cases[case]:
-            for pH in ["Acid", "Basic"]:
-                os.system("cd {0}/G{1}/{2}/tmp".format(case, G, pH))
+            for pH in ["Acid", "Neutral"]:
+                current_case=root+"/{0}/G{1}/{2}/tmp".format(case, G, pH)
+                os.chdir(current_case)
+                os.system("pwd")
 
+                os.system("mkdir -p {}/proc".format(current_case))
                 index(ligand[case])
-                calculate_gyrate("gyrate_{0}G{1}_{2}".format(case, G, pH), ff, lf)
-                #calculate_delta()
-                rdf("rdf__{0}G{1}_{2}".format(case, G, pH), ff, lf)
-                distance("distances__{0}G{1}_{2}".format(case, G, pH), ff, lf)
+                Rgm, Rgxm, Rgym, Rgzm = calculate_gyrate(current_case+"/gyrate_{0}G{1}_{2}".format(case, G, pH), ff, lf)
+                # Rgm, Rgxm, Rgym, Rgzm = calculate_gyrate(ff=ff, lf=lf)
+                
+                # calculate_delta()
+                
+                rdf("rdf_{0}G{1}_{2}".format(case, G, pH), ff, lf)
+                
+                time, ligands_n = distance("distances_{0}G{1}_{2}".format(case, G, pH), ff, lf, Rgm[0]+2*Rgm[1])
+                # time, ligands_n = distance(ff=ff, lf=lf, Rgm=Rgm[0]+2*Rgm[1])
+                file = open("ligands_{0}G{1}_{2}".format(case, G, pH)+"xvg",'w')
+                for t in range(len(time)):
+                    file.write("{0:10.3f} {1:10d} \n".format(time[t], ligands_n[t]))
+                file.close()
 
-                os.system("cd -")
+                os.system("mv gyrate_{0}G{1}_{2}.xvg rdf_{0}G{1}_{2}.xvg distances_{0}G{1}_{2}.xvg ligands_{0}G{1}_{2}.xvg proc/.".format(case, G, pH))
                 clean(["\#*"])
+
+                os.chdir(root)
+                
+                # plt.plot(time, ligands_n)
+                # plt.show()
+
 
 if __name__ == "__main__":
     main()
-
-
-
-
-
-
-
-
-
-
