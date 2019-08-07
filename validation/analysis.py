@@ -15,7 +15,7 @@ import os
 # # os.system("mv ${dend}_G${i}_${j}.gro /home/mayk/Documents/Labmmol/Dendrimer/Results${dend}_${setup}/proc/.")
 
 
-def index():
+def index(ligand_case):
     os.system("gmx make_ndx -f npt300_2.gro -o index.ndx << !\n\
     keep 0 \n\
     r CORE | r INTR | r TER \n\
@@ -24,19 +24,19 @@ def index():
     name 2 ligand \n\
     \n\
     q \n\
-    !".format(ligand=ligand["5-Fluorouracil"]))
+    !".format(ligand=ligand_case))
 
 
-def calculate_gyrate():
+def calculate_gyrate(outputName="gyrate.xvg", ff=0, lf=0):
     os.system("echo Dendrimer | gmx gyrate  -s md.tpr \
                                             -f md.trr \
                                             -n index.ndx \
                                             -b {ff} \
                                             -e {lf} \
-                                            -o gyrate.xvg".format(ff=ff, lf=lf))
+                                            -o {output}".format(output=outputName, ff=ff, lf=lf))
     os.system("mv foo bar")
 
-    file = open("gyrate.xvg",'r')
+    file = open(outputName,'r')
 
     Rg, Rg_x, Rg_y, Rg_z = 0,0,0,0
     Rg2, Rg_x2, Rg_y2, Rg_z2 = 0,0,0,0
@@ -91,7 +91,7 @@ def calculate_delta():
     #calculate mean values
 
 
-def rdf():
+def rdf(outputName="rdf.xvg", ff=0, lf=0):
     os.system("gmx rdf  -f md.xtc \
                         -s md.tpr \
                         -n index.ndx \
@@ -101,9 +101,11 @@ def rdf():
                         -sel ligand \
                         -bin 0.002 \
                         -selrpos res_com \
-                        -o rdf.xvg".format(ff=ff, lf=lf))
+                        -o {output}".format(output=outputName, ff=ff, lf=lf))
 
-def distance():
+    # Plot rdf
+
+def distance(outputName="distances.xvg", ff=0, lf=0):
     os.system("gmx pairdist -f md.xtc \
                             -s md.tpr \
                             -n index.ndx \
@@ -114,9 +116,9 @@ def distance():
                             -refgrouping mol \
                             -sel ligand \
                             -selgrouping res \
-                            -o distances.xvg".format(ff=ff, lf=lf))
+                            -o {output}".format(output=outputName, ff=ff, lf=lf))
 
-    file = open("distances.xvg",'r')
+    file = open(outputName,'r')
 
     time=[]
     ligands_n=[]
@@ -138,8 +140,11 @@ def distance():
     print(ligands_n)
 
 
-def clean():
-    os.system("rm \#*")
+def clean(list):
+    trash=""
+    for c in list:
+        trash+=x+" "
+    os.system("rm {}".format(trash))
 
 def main():
     ff=0
@@ -165,23 +170,20 @@ def main():
 
     for case in cases:
         for G in cases[case]:
-            #ANALYZE
-            #RG
-            #DELTA
-            #RDF
-            #DISTANCES
+            for pH in ["Acid", "Basic"]:
+                os.system("cd {0}/G{1}/{2}/tmp".format(case, G, pH))
+
+                index(ligand[case])
+                calculate_gyrate("gyrate_{0}G{1}_{2}".format(case, G, pH), ff, lf)
+                #calculate_delta()
+                rdf("rdf__{0}G{1}_{2}".format(case, G, pH), ff, lf)
+                distance("distances__{0}G{1}_{2}".format(case, G, pH), ff, lf)
+
+                os.system("cd -")
+                clean(["\#*"])
 
 if __name__ == "__main__":
     main()
-
-
-
-
-
-
-
-
-
 
 
 
