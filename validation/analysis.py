@@ -1,8 +1,8 @@
 #!/bin/python3
 
 import os
-import numpy as np
-import matplotlib as plot
+#import numpy as np
+#import matplotlib as plot
 
 
 ff=0
@@ -52,6 +52,45 @@ print(cases)
 #                                         -o gyrate.xvg".format(ff=ff, lf=lf))
 # os.system("mv foo bar")
 
+file = open("gyrate.xvg",'r')
+
+Rg, Rg_x, Rg_y, Rg_z = 0,0,0,0
+Rg2, Rg_x2, Rg_y2, Rg_z2 = 0,0,0,0
+count = 0
+
+for line in file:
+    if line[0] not in ["@", "#"]:
+        count+=1
+        line_elements=line.strip().split()
+        Rg+=float(line_elements[1])
+        Rg2+=float(line_elements[1])*float(line_elements[1])
+
+        Rg_x+=float(line_elements[2])
+        Rg_x2+=float(line_elements[2])*float(line_elements[2])
+
+        Rg_y+=float(line_elements[3])
+        Rg_y2+=float(line_elements[3])*float(line_elements[3])
+
+        Rg_z+=float(line_elements[4])
+        Rg_z2+=float(line_elements[4])*float(line_elements[4])
+
+Rgm   = Rg/count
+Rg_dp = (Rg2/count - (Rg/count)**2 )**0.5
+Rg_xm = Rg_x/count
+Rg_xm_dp = (Rg_x2/count - (Rg_x/count)**2 )**0.5
+Rg_ym = Rg_y/count
+Rg_ym_dp = (Rg_y2/count - (Rg_y/count)**2 )**0.5
+Rg_zm = Rg_z/count
+Rg_zm_dp = (Rg_z2/count - (Rg_z/count)**2 )**0.5
+
+file.close()
+
+print("Rg:  ", Rgm, "+/-", Rg_dp)
+print("Rgx: ", Rg_xm, "+/-", Rg_xm_dp)
+print("Rgy: ", Rg_ym, "+/-", Rg_ym_dp)
+print("Rgz: ", Rg_zm, "+/-", Rg_zm_dp)
+
+
 # #calculate mean values
 
 # ################### delta ###################
@@ -98,30 +137,29 @@ print(cases)
 
 # #                       -cutoff 5 \
 
-os.system("gmx pairdist -f md.xtc \
-                        -s md.tpr \
-                        -n index.ndx \
-                        -b {ff} \
-                        -e {lf} \
-                        -selrpos res_com \
-                        -ref Dendrimer \
-                        -refgrouping mol \
-                        -sel ligand \
-                        -selgrouping res \
-                        -o distances.xvg".format(ff=ff, lf=lf))
+# os.system("gmx pairdist -f md.xtc \
+#                         -s md.tpr \
+#                         -n index.ndx \
+#                         -b {ff} \
+#                         -e {lf} \
+#                         -selrpos res_com \
+#                         -ref Dendrimer \
+#                         -refgrouping mol \
+#                         -sel ligand \
+#                         -selgrouping res \
+#                         -o distances.xvg".format(ff=ff, lf=lf))
 
 file = open("distances.xvg",'r')
 
 time=[]
 ligands_n=[]
-Rg=3.0
+Rg=Rgm
 for line in file:
     if line[0] not in ["@", "#"]:
         line_elements=line.strip().split()
         t = float(line_elements[0])
         count=0
         for k in line_elements:
-            print(len(line_elements))
             if float(k) < Rg:
                 count+=1
         time.append(t)
