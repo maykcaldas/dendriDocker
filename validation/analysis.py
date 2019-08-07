@@ -5,11 +5,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 #####   creating .gro  ###############
-# # os.system("echo Dendrimer | $gmx514 trjconv -f md.xtc \
-# #                                             -s md.tpr \
-# #                                             -n index.ndx \
-# #                                             -o ${dend}_G${i}_${j}.gro \
-# #                                             -pbc mol")
 
 
 # # os.system("mv ${dend}_G${i}_${j}.gro /home/mayk/Documents/Labmmol/Dendrimer/Results${dend}_${setup}/proc/.")
@@ -68,28 +63,27 @@ def calculate_gyrate(outputName="gyrate.xvg", ff=0, lf=0):
 
     file.close()
 
-    print("Rg:  ", Rgm, "+/-", Rgm_dp)
-    print("Rgx: ", Rg_xm, "+/-", Rg_xm_dp)
-    print("Rgy: ", Rg_ym, "+/-", Rg_ym_dp)
-    print("Rgz: ", Rg_zm, "+/-", Rg_zm_dp)
-
     return ((Rgm, Rgm_dp),(Rg_xm, Rg_xm_dp),(Rg_ym, Rg_ym_dp),(Rg_zm, Rg_zm_dp))
 
-def calculate_delta():
+def calculate_delta(outputName="output.gro", ff=0, lf=0):
     # O ALGORITMO DE CALCULO DO MOMENTO DE INERCIA DO GROMACS TÁ BUGADO.
     # USAR MINHA ROTINA DE CÁLCULO DO DELTA
     # Ela precisa ler um .gro. Não sei se eu quero fazer isso
 
-    os.system("echo Dendrimer | gmx gyrate  -moi \
+    os.system("echo Dendrimer | gmx trjconv -f md.xtc \
                                             -s md.tpr \
-                                            -f md.xtc \
-                                            -n index.ndx \
                                             -b {ff} \
                                             -e {lf} \
-                                            -o moi.xvg".format(ff=ff, lf=lf))
+                                            -n index.ndx \
+                                            -pbc nojump\
+                                            -o {output}".format(output=outputName, ff=ff, lf=lf))
 
-    #calculate mean values
+    file=open(outputName, 'r')
+    gro=file.readlines()
+    file.close()
 
+
+    
 
 def rdf(outputName="rdf.xvg", ff=0, lf=0):
     os.system("gmx rdf  -f md.xtc \
@@ -150,7 +144,7 @@ def main():
 
     cases={
         "5-Fluorouracil" : [4, 5],
-        # "Carbamazepine" : [4],
+        "Carbamazepine" : [4],
         # "Quercetin" : [0, 1, 2, 3],
         # "Methotrexate" : [4],
         # "SilybinA" : [2, 3, 4],
@@ -167,7 +161,11 @@ def main():
 
     for case in cases:
         for G in cases[case]:
-            for pH in ["Acid", "Neutral"]:
+            if case == "Carbamazepine":
+                systems=["Acid/F_100", "Acid/F_500" "Neutral"]
+            else:
+                systems=["Acid", "Neutral"]
+            for pH in systems:
                 current_case=root+"/{0}/G{1}/{2}/tmp".format(case, G, pH)
                 os.chdir(current_case)
                 os.system("pwd")
@@ -183,7 +181,7 @@ def main():
                 
                 time, ligands_n = distance("distances_{0}G{1}_{2}".format(case, G, pH), ff, lf, Rgm[0]+2*Rgm[1])
                 # time, ligands_n = distance(ff=ff, lf=lf, Rgm=Rgm[0]+2*Rgm[1])
-                file = open("ligands_{0}G{1}_{2}".format(case, G, pH)+"xvg",'w')
+                file = open("ligands_{0}G{1}_{2}".format(case, G, pH)+".xvg",'w')
                 for t in range(len(time)):
                     file.write("{0:10.3f} {1:10d} \n".format(time[t], ligands_n[t]))
                 file.close()

@@ -1,0 +1,447 @@
+set terminal pngcairo size 1800,1500 enhanced font 'Verdana-Bold,10'
+#set output "PAMAMTerRDF.png"
+set output "PAMAMRDF.png"
+
+#Setting fonts#
+
+titleFont="'Verdana-Bold,20'"
+labelFont="'Verdana-Bold,18'"
+ticsFont="'Verdana-Bold,16'"
+keyFont="'Verdana-Bold,14'"
+
+#Setting the pallete#
+
+set style line 8 lc rgb "black" lt 1 lw 3       # error bar / Liu2009
+set style line 1 lc rgb "red" lt 1 lw 3         # 2016H66
+set style line 2 lc rgb "blue" lt 1 lw 3        # Maingi2012
+set style line 3 lc rgb "#008B8B" lt 1 lw 3     # Maiti2004
+set style line 4 lc rgb "#FF8C00" lt 1 lw 3     # Maiti2005
+set style line 5 lc rgb "green" lt 1 lw 3       # Opitz2006
+set style line 6 lc rgb "#9400D3" lt 1 lw 3     # Lee2002
+set style line 7 lc rgb "#1E90FF" lt 1 lw 3     # Caballero2013
+set style line 9 lc rgb "#8B0000" lt 1 lw 3     # Barraza2018
+set style line 10 lc rgb "#006b00" lt 1 lw 3    # Gromos-Kanchi2018
+set style line 11 lc rgb "#ff32fd" lt 1 lw 3    # CHARMM-Kanchi2018
+set style line 12 lc rgb "#ff32fd" lt 1 lw 3    # Porcar2008
+set style line 13 lc rgb "#ff32fd" lt 1 lw 3    # Prosa1997
+set style line 14 lc rgb "#ff32fd" lt 1 lw 3    # Rathgeber2002
+set style line 15 lc rgb "#ff32fd" lt 1 lw 3    # Freire2016
+set style line 16 lc rgb "#ff32fd" lt 1 lw 3    # Tanis2009
+
+#####################
+
+#unset multiplot
+#set terminal pngcairo size 600,1500 enhanced font 'Verdana-Bold,10'
+#set output "PAMAMMonomerRDF.png"
+
+set key right font @keyFont
+
+set border front lc 0 lt 1 lw 3
+set grid back linecolor 0 lt 0 lw 2
+
+set multiplot layout 3,3 columnsfirst
+
+set xlabel "r[nm]" font @labelFont
+set xtics font @ticsFont
+set xrange [0:5]
+
+set ytics font @ticsFont
+set yrange [0:1800]
+set ylabel "(4πr²Δr)g(r): Monomer-CM\n" font @labelFont
+
+#-------------------------------//------------------------------#
+
+set title "Low pH" font @titleFont
+
+plot "../rdf_G0_Acid_nonorm.xvg" using 1:2 title "G0" with lines ls 1, \
+     "../rdf_G1_Acid_nonorm.xvg" using 1:2 title "G1" with lines ls 2, \
+     "../rdf_G2_Acid_nonorm.xvg" using 1:2 title "G2" with lines ls 3, \
+     "../rdf_G3_Acid_nonorm.xvg" using 1:2 title "G3" with lines ls 4, \
+     "../rdf_G4_Acid_nonorm.xvg" using 1:2 title "G4" with lines ls 5, \
+     "../rdf_G5_Acid_nonorm.xvg" using 1:2 title "G5" with lines ls 6, \
+ 
+#-------------------------------//------------------------------#
+
+set title "Neutral pH" font @titleFont
+
+plot "../rdf_G0_Neutral_nonorm.xvg" using 1:2 title "G0" with lines ls 1, \
+     "../rdf_G1_Neutral_nonorm.xvg" using 1:2 title "G1" with lines ls 2, \
+     "../rdf_G2_Neutral_nonorm.xvg" using 1:2 title "G2" with lines ls 3, \
+     "../rdf_G3_Neutral_nonorm.xvg" using 1:2 title "G3" with lines ls 4, \
+     "../rdf_G4_Neutral_nonorm.xvg" using 1:2 title "G4" with lines ls 5, \
+     "../rdf_G5_Neutral_nonorm.xvg" using 1:2 title "G5" with lines ls 6, \
+ 
+#-------------------------------//------------------------------#
+
+set title "High pH" font @titleFont
+
+plot "../rdf_G0_Basic_nonorm.xvg" using 1:2 title "G0" with lines ls 1, \
+     "../rdf_G1_Basic_nonorm.xvg" using 1:2 title "G1" with lines ls 2, \
+     "../rdf_G2_Basic_nonorm.xvg" using 1:2 title "G2" with lines ls 3, \
+     "../rdf_G3_Basic_nonorm.xvg" using 1:2 title "G3" with lines ls 4, \
+     "../rdf_G4_Basic_nonorm.xvg" using 1:2 title "G4" with lines ls 5, \
+     "../rdf_G5_Basic_nonorm.xvg" using 1:2 title "G5" with lines ls 6, \
+     
+##################################################
+
+#unset multiplot
+#set terminal pngcairo size 600,1500 enhanced font 'Verdana-Bold,10'
+set key right font @keyFont
+
+set border front lc 0 lt 1 lw 3
+set grid back linecolor 0 lt 0 lw 2
+
+#set multiplot layout 3,1
+
+set xlabel "r[nm]" font @labelFont
+set xtics font @ticsFont
+set xrange [0:5]
+
+set ytics font @ticsFont
+set yrange [0:45]
+set ylabel "g(r): Ter-CM\n" font @labelFont 
+
+#-------------------------------//------------------------------#
+
+set title "Low pH" font @titleFont
+
+plot "../ter_G0_Acid.xvg" using 1:2 title "G0" with lines ls 1, \
+     "../ter_G1_Acid.xvg" using 1:2 title "G1" with lines ls 2, \
+     "../ter_G2_Acid.xvg" using 1:2 title "G2" with lines ls 3, \
+     "../ter_G3_Acid.xvg" using 1:2 title "G3" with lines ls 4, \
+     "../ter_G4_Acid.xvg" using 1:2 title "G4" with lines ls 5, \
+     "../ter_G5_Acid.xvg" using 1:2 title "G5" with lines ls 6, \
+
+#-------------------------------//------------------------------#
+
+set title "Neutral pH" font @titleFont
+
+plot "../ter_G0_Neutral.xvg" using 1:2 title "G0" with lines ls 1, \
+     "../ter_G1_Neutral.xvg" using 1:2 title "G1" with lines ls 2, \
+     "../ter_G2_Neutral.xvg" using 1:2 title "G2" with lines ls 3, \
+     "../ter_G3_Neutral.xvg" using 1:2 title "G3" with lines ls 4, \
+     "../ter_G4_Neutral.xvg" using 1:2 title "G4" with lines ls 5, \
+     "../ter_G5_Neutral.xvg" using 1:2 title "G5" with lines ls 6, \
+
+#-------------------------------//------------------------------#
+
+set title "High pH" font @titleFont
+
+plot "../ter_G0_Basic.xvg" using 1:2 title "G0" with lines ls 1, \
+     "../ter_G1_Basic.xvg" using 1:2 title "G1" with lines ls 2, \
+     "../ter_G2_Basic.xvg" using 1:2 title "G2" with lines ls 3, \
+     "../ter_G3_Basic.xvg" using 1:2 title "G3" with lines ls 4, \
+     "../ter_G4_Basic.xvg" using 1:2 title "G4" with lines ls 5, \
+     "../ter_G5_Basic.xvg" using 1:2 title "G5" with lines ls 6, \
+
+##################################################
+
+#unset multiplot
+#set terminal pngcairo size 600,1500 enhanced font 'Verdana-Bold,10'
+#set output "PAMAMWaterRDF.png"
+
+set key right font @keyFont
+
+set border front lc 0 lt 1 lw 3
+set grid back linecolor 0 lt 0 lw 2
+
+#set multiplot layout 3,1
+
+set xlabel "r[nm]" font @labelFont
+set xtics font @ticsFont
+set xrange [0:4]
+
+set ytics font @ticsFont
+set yrange [0:2]
+set ylabel "g(r): Water-CM\n" font @labelFont
+
+#-------------------------------//------------------------------#
+
+set title "Low pH" font @titleFont
+
+plot "../water_G0_Acid.xvg" using 1:2 title "G0" with lines ls 1, \
+     "../water_G1_Acid.xvg" using 1:2 title "G1" with lines ls 2, \
+     "../water_G2_Acid.xvg" using 1:2 title "G2" with lines ls 3, \
+     "../water_G3_Acid.xvg" using 1:2 title "G3" with lines ls 4, \
+     "../water_G4_Acid.xvg" using 1:2 title "G4" with lines ls 5, \
+     "../water_G5_Acid.xvg" using 1:2 title "G5" with lines ls 6, \
+
+#-------------------------------//------------------------------#
+
+set title "Neutral pH" font @titleFont
+
+plot "../water_G0_Neutral.xvg" using 1:2 title "G0" with lines ls 1, \
+     "../water_G1_Neutral.xvg" using 1:2 title "G1" with lines ls 2, \
+     "../water_G2_Neutral.xvg" using 1:2 title "G2" with lines ls 3, \
+     "../water_G3_Neutral.xvg" using 1:2 title "G3" with lines ls 4, \
+     "../water_G4_Neutral.xvg" using 1:2 title "G4" with lines ls 5, \
+     "../water_G5_Neutral.xvg" using 1:2 title "G5" with lines ls 6, \
+
+#-------------------------------//------------------------------#
+
+set title "High pH" font @titleFont
+
+plot "../water_G0_Basic.xvg" using 1:2 title "G0" with lines ls 1, \
+     "../water_G1_Basic.xvg" using 1:2 title "G1" with lines ls 2, \
+     "../water_G2_Basic.xvg" using 1:2 title "G2" with lines ls 3, \
+     "../water_G3_Basic.xvg" using 1:2 title "G3" with lines ls 4, \
+     "../water_G4_Basic.xvg" using 1:2 title "G4" with lines ls 5, \
+     "../water_G5_Basic.xvg" using 1:2 title "G5" with lines ls 6, \
+
+##################################################
+
+unset multiplot
+set terminal pngcairo size 600,1000 enhanced font 'Verdana-Bold,10'
+set output "PAMAMClRDF.png"
+
+set key right font @keyFont
+
+set border front lc 0 lt 1 lw 3
+set grid back linecolor 0 lt 0 lw 2
+
+set multiplot layout 2,1
+
+set xlabel "r[nm]" font @labelFont
+set xtics font @ticsFont
+set xrange [0:4]
+
+set ytics font @ticsFont
+set yrange [0:18]
+set ylabel "g(r): Cl^{-}-CM\n" font @labelFont
+
+#-------------------------------//------------------------------#
+
+set title "Low pH" font @titleFont
+
+plot "../cl_G0_Acid.xvg" using 1:2 title "G0" with lines ls 1, \
+     "../cl_G1_Acid.xvg" using 1:2 title "G1" with lines ls 2, \
+     "../cl_G2_Acid.xvg" using 1:2 title "G2" with lines ls 3, \
+     "../cl_G3_Acid.xvg" using 1:2 title "G3" with lines ls 4, \
+     "../cl_G4_Acid.xvg" using 1:2 title "G4" with lines ls 5, \
+     "../cl_G5_Acid.xvg" using 1:2 title "G5" with lines ls 6, \
+
+#-------------------------------//------------------------------#
+
+set title "Neutral pH" font @titleFont
+
+plot "../cl_G0_Neutral.xvg" using 1:2 title "G0" with lines ls 1, \
+     "../cl_G1_Neutral.xvg" using 1:2 title "G1" with lines ls 2, \
+     "../cl_G2_Neutral.xvg" using 1:2 title "G2" with lines ls 3, \
+     "../cl_G3_Neutral.xvg" using 1:2 title "G3" with lines ls 4, \
+     "../cl_G4_Neutral.xvg" using 1:2 title "G4" with lines ls 5, \
+     "../cl_G5_Neutral.xvg" using 1:2 title "G5" with lines ls 6, \
+
+#-------------------------------//------------------------------#
+   
+###############################NONORM###################################
+
+unset multiplot
+set terminal pngcairo size 1800,1500 enhanced font 'Verdana-Bold,10'
+set output "PAMAMRDF_nonorm.png"
+
+set key right font @keyFont 
+
+set border front lc 0 lt 1 lw 3
+set grid back linecolor 0 lt 0 lw 2
+
+set multiplot layout 3,3 columnsfirst
+
+set xlabel "r[nm]" font @labelFont
+set xtics font @ticsFont
+set xrange [0:1]
+
+set ytics font @ticsFont
+set yrange [0:450]
+set ylabel "g(r): Monomer-CM\n" font @labelFont
+
+#-------------------------------//------------------------------#
+
+set key left font @keyFont at 0.4,1700
+set title "Low pH" font @titleFont
+
+plot "../rdf_G0_Acid.xvg" using 1:2 title "G0" with lines ls 1, \
+     "../rdf_G1_Acid.xvg" using 1:2 title "G1" with lines ls 2, \
+     "../rdf_G2_Acid.xvg" using 1:2 title "G2" with lines ls 3, \
+     "../rdf_G3_Acid.xvg" using 1:2 title "G3" with lines ls 4, \
+     "../rdf_G4_Acid.xvg" using 1:2 title "G4" with lines ls 5, \
+     "../rdf_G5_Acid.xvg" using 1:2 title "G5" with lines ls 6, \
+ 
+#-------------------------------//------------------------------#
+
+set title "Neutral pH" font @titleFont
+
+plot "../rdf_G0_Neutral.xvg" using 1:2 title "G0" with lines ls 1, \
+     "../rdf_G1_Neutral.xvg" using 1:2 title "G1" with lines ls 2, \
+     "../rdf_G2_Neutral.xvg" using 1:2 title "G2" with lines ls 3, \
+     "../rdf_G3_Neutral.xvg" using 1:2 title "G3" with lines ls 4, \
+     "../rdf_G4_Neutral.xvg" using 1:2 title "G4" with lines ls 5, \
+     "../rdf_G5_Neutral.xvg" using 1:2 title "G5" with lines ls 6, \
+ 
+#-------------------------------//------------------------------#
+
+set key right font @keyFont at 4.8,1700
+set title "High pH" font @titleFont
+
+plot "../rdf_G0_Basic.xvg" using 1:2 title "G0" with lines ls 1, \
+     "../rdf_G1_Basic.xvg" using 1:2 title "G1" with lines ls 2, \
+     "../rdf_G2_Basic.xvg" using 1:2 title "G2" with lines ls 3, \
+     "../rdf_G3_Basic.xvg" using 1:2 title "G3" with lines ls 4, \
+     "../rdf_G4_Basic.xvg" using 1:2 title "G4" with lines ls 5, \
+     "../rdf_G5_Basic.xvg" using 1:2 title "G5" with lines ls 6, \
+
+##################################################
+
+#unset multiplot
+#set terminal pngcairo size 600,1500 enhanced font 'Verdana-Bold,10'
+#set output "PAMAMTerRDF_nonorm.png"
+
+set key right font @keyFont 
+
+set border front lc 0 lt 1 lw 3
+set grid back linecolor 0 lt 0 lw 2
+
+#set multiplot layout 3,1
+
+set xlabel "r[nm]" font @labelFont
+set xtics font @ticsFont
+set xrange [0:5]
+
+set ytics font @ticsFont
+set yrange [0:700]
+set ylabel "(4πr²Δr)g(r): Ter-CM\n" font @labelFont
+
+#-------------------------------//------------------------------#
+
+set key left font @keyFont at 0.4,650
+set title "Low pH" font @titleFont
+
+plot "../ter_G0_Acid_nonorm.xvg" using 1:2 title "G0" with lines ls 1, \
+     "../ter_G1_Acid_nonorm.xvg" using 1:2 title "G1" with lines ls 2, \
+     "../ter_G2_Acid_nonorm.xvg" using 1:2 title "G2" with lines ls 3, \
+     "../ter_G3_Acid_nonorm.xvg" using 1:2 title "G3" with lines ls 4, \
+     "../ter_G4_Acid_nonorm.xvg" using 1:2 title "G4" with lines ls 5, \
+     "../ter_G5_Acid_nonorm.xvg" using 1:2 title "G5" with lines ls 6, \
+
+#-------------------------------//------------------------------#
+
+set title "Neutral pH" font @titleFont
+
+plot "../ter_G0_Neutral_nonorm.xvg" using 1:2 title "G0" with lines ls 1, \
+     "../ter_G1_Neutral_nonorm.xvg" using 1:2 title "G1" with lines ls 2, \
+     "../ter_G2_Neutral_nonorm.xvg" using 1:2 title "G2" with lines ls 3, \
+     "../ter_G3_Neutral_nonorm.xvg" using 1:2 title "G3" with lines ls 4, \
+     "../ter_G4_Neutral_nonorm.xvg" using 1:2 title "G4" with lines ls 5, \
+     "../ter_G5_Neutral_nonorm.xvg" using 1:2 title "G5" with lines ls 6, \
+
+#-------------------------------//------------------------------#
+
+set key right font @keyFont at 4.8,650
+set title "High pH" font @titleFont
+
+plot "../ter_G0_Basic_nonorm.xvg" using 1:2 title "G0" with lines ls 1, \
+     "../ter_G1_Basic_nonorm.xvg" using 1:2 title "G1" with lines ls 2, \
+     "../ter_G2_Basic_nonorm.xvg" using 1:2 title "G2" with lines ls 3, \
+     "../ter_G3_Basic_nonorm.xvg" using 1:2 title "G3" with lines ls 4, \
+     "../ter_G4_Basic_nonorm.xvg" using 1:2 title "G4" with lines ls 5, \
+     "../ter_G5_Basic_nonorm.xvg" using 1:2 title "G5" with lines ls 6, \
+
+##################################################
+
+#unset multiplot
+#set terminal pngcairo size 600,1500 enhanced font 'Verdana-Bold,10'
+#set output "PAMAMWaterRDF_nonorm.png"
+
+set key left font @keyFont at 0.4,19500
+
+set border front lc 0 lt 1 lw 3
+set grid back linecolor 0 lt 0 lw 2
+
+#set multiplot layout 3,1
+
+set xlabel "r[nm]" font @labelFont
+set xtics font @ticsFont
+set xrange [0:5]
+
+set ytics font @ticsFont
+set yrange [0:20000]
+set ylabel "(4πr²Δr)g(r): Water-CM\n" font @labelFont
+
+#-------------------------------//------------------------------#
+
+set title "Low pH" font @titleFont
+
+plot "../water_G0_Acid_nonorm.xvg" using 1:2 title "G0" with lines ls 1, \
+     "../water_G1_Acid_nonorm.xvg" using 1:2 title "G1" with lines ls 2, \
+     "../water_G2_Acid_nonorm.xvg" using 1:2 title "G2" with lines ls 3, \
+     "../water_G3_Acid_nonorm.xvg" using 1:2 title "G3" with lines ls 4, \
+     "../water_G4_Acid_nonorm.xvg" using 1:2 title "G4" with lines ls 5, \
+     "../water_G5_Acid_nonorm.xvg" using 1:2 title "G5" with lines ls 6, \
+
+#-------------------------------//------------------------------#
+
+set title "Neutral pH" font @titleFont
+
+plot "../water_G0_Neutral_nonorm.xvg" using 1:2 title "G0" with lines ls 1, \
+     "../water_G1_Neutral_nonorm.xvg" using 1:2 title "G1" with lines ls 2, \
+     "../water_G2_Neutral_nonorm.xvg" using 1:2 title "G2" with lines ls 3, \
+     "../water_G3_Neutral_nonorm.xvg" using 1:2 title "G3" with lines ls 4, \
+     "../water_G4_Neutral_nonorm.xvg" using 1:2 title "G4" with lines ls 5, \
+     "../water_G5_Neutral_nonorm.xvg" using 1:2 title "G5" with lines ls 6, \
+
+#-------------------------------//------------------------------#
+
+set title "High pH" font @titleFont
+
+plot "../water_G0_Basic_nonorm.xvg" using 1:2 title "G0" with lines ls 1, \
+     "../water_G1_Basic_nonorm.xvg" using 1:2 title "G1" with lines ls 2, \
+     "../water_G2_Basic_nonorm.xvg" using 1:2 title "G2" with lines ls 3, \
+     "../water_G3_Basic_nonorm.xvg" using 1:2 title "G3" with lines ls 4, \
+     "../water_G4_Basic_nonorm.xvg" using 1:2 title "G4" with lines ls 5, \
+     "../water_G5_Basic_nonorm.xvg" using 1:2 title "G5" with lines ls 6, \
+
+##################################################
+ 
+unset multiplot
+set terminal pngcairo size 600,1000 enhanced font 'Verdana-Bold,10'
+set output "PAMAMClRDF_nonorm.png"
+
+set key left font @keyFont at 0.4,90
+
+set border front lc 0 lt 1 lw 3
+set grid back linecolor 0 lt 0 lw 2
+
+set multiplot layout 2,1
+
+set xlabel "r[nm]" font @labelFont
+set xtics font @ticsFont
+set xrange [0:5]
+
+set ytics font @ticsFont
+set yrange [0:100]
+set ylabel "(4πr²Δr)g(r): Cl^{-}-CM\n" font @labelFont
+
+#-------------------------------//------------------------------#
+
+set title "Low pH" font @titleFont
+
+plot "../cl_G0_Acid_nonorm.xvg" using 1:2 title "G0" with lines ls 1, \
+     "../cl_G1_Acid_nonorm.xvg" using 1:2 title "G1" with lines ls 2, \
+     "../cl_G2_Acid_nonorm.xvg" using 1:2 title "G2" with lines ls 3, \
+     "../cl_G3_Acid_nonorm.xvg" using 1:2 title "G3" with lines ls 4, \
+     "../cl_G4_Acid_nonorm.xvg" using 1:2 title "G4" with lines ls 5, \
+     "../cl_G5_Acid_nonorm.xvg" using 1:2 title "G5" with lines ls 6, \
+
+#-------------------------------//------------------------------#
+
+set title "Neutral pH" font @titleFont
+
+plot "../cl_G0_Neutral_nonorm.xvg" using 1:2 title "G0" with lines ls 1, \
+     "../cl_G1_Neutral_nonorm.xvg" using 1:2 title "G1" with lines ls 2, \
+     "../cl_G2_Neutral_nonorm.xvg" using 1:2 title "G2" with lines ls 3, \
+     "../cl_G3_Neutral_nonorm.xvg" using 1:2 title "G3" with lines ls 4, \
+     "../cl_G4_Neutral_nonorm.xvg" using 1:2 title "G4" with lines ls 5, \
+     "../cl_G5_Neutral_nonorm.xvg" using 1:2 title "G5" with lines ls 6, \
+
+#-------------------------------//------------------------------#
+
+##################################################
