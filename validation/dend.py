@@ -36,11 +36,6 @@ def readFrame(gro, frame, natoms):
     read=gro[(firstLine+2):(lastLine)]
     box=gro[lastLine]
 
-#    print(title[:-1])
-    #print(gro[firstLine+1][:-1])
-    #for i in read: print (i[:-1])
-    #print(box[:-1])
-    
     for i in range(len(read)):
         atoms.append(read[i].split())
     return(atoms, title)
@@ -214,12 +209,6 @@ def calcMoi(select, time):
             
     try:
         eigen=numpy.linalg.eig(G)[0]
-
-#        print (eigen)
-#        
-#        for i in G:
-#            print(i)
-        
     except LinAlgError:
         print("The shape tensor eigenvalues calculation didn't converge")
         exit()
