@@ -4,11 +4,12 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 import math
+import time
 
 #####   creating .gro  ###############
 
 
-# # os.system("mv ${dend}_G${i}_${j}.gro /home/mayk/Documents/Labmmol/Dendrimer/Results${dend}_${setup}/proc/.")
+# os.system("mv ${dend}_G${i}_${j}.gro /home/mayk/Documents/Labmmol/Dendrimer/Results${dend}_${setup}/proc/.")
 
 
 def index(ligand_case):
@@ -144,7 +145,7 @@ def calcCM(group):
     return([CMx/TMass, CMy/TMass, CMz/TMass])
 
 
-def calcMoi(select, time):
+def calcMoi(select, currentFrame):
     G=[[0,0,0],\
        [0,0,0],\
        [0,0,0]]
@@ -178,14 +179,10 @@ def calcMoi(select, time):
     
     I=math.sqrt(eigen[0]*eigen[0]+eigen[1]*eigen[1]+eigen[2]*eigen[2])
     
-    return ([time, I, eigen[0], eigen[1], eigen[2]])
+    return ([currentFrame, I, eigen[0], eigen[1], eigen[2]])
 
 
 def calculate_delta(outputName="output.gro", ff=0, lf=0):
-    # O ALGORITMO DE CALCULO DO MOMENTO DE INERCIA DO GROMACS TÁ BUGADO.
-    # USAR MINHA ROTINA DE CÁLCULO DO DELTA
-    # Ela precisa ler um .gro. Não sei se eu quero fazer isso
-
     os.system("echo Dendrimer | gmx trjconv -f md.xtc \
                                             -s md.tpr \
                                             -b {ff} \
@@ -212,21 +209,21 @@ def calculate_delta(outputName="output.gro", ff=0, lf=0):
     for frame in range(totalFrames):
         atoms, title=readFrame(gro, frame, natoms)
 
-        time=float(title.split()[-1])
-        if (time < nmin):
-            # print (str(time) + " Frame was not used")
+        currentFrame=float(title.split()[-1])
+        if (currentFrame < nmin):
+            # print (str(currentFrame) + " Frame was not used")
             continue
-        elif (time > nmax):
-            # print (str(time) + " Last frame reached")
+        elif (currentFrame > nmax):
+            # print (str(currentFrame) + " Last frame reached")
             break
         else:
-            # print (str(time) + " Computing...")
+            # print (str(currentFrame) + " Computing...")
             usedFrames+=1
         
         dend=selDend(atoms)
         CM=calcCM(dend)
 
-        moment=calcMoi(dend,time)
+        moment=calcMoi(dend,currentFrame)
 
         moil.append(moment)
 
@@ -282,6 +279,7 @@ def rdf(outputName="rdf.xvg", ff=0, lf=0):
 
     # Plot rdf
 
+
 def distance(outputName="distances.xvg", ff=0, lf=0, Rgm=0):
     os.system("gmx pairdist -f md.xtc \
                             -s md.tpr \
@@ -296,7 +294,7 @@ def distance(outputName="distances.xvg", ff=0, lf=0, Rgm=0):
                             -o {output}".format(output=outputName, ff=ff, lf=lf))
 
     file = open(outputName,'r')
-    time=[]
+    timeArray=[]
     ligands_n=[]
     Rg=Rgm
     for line in file:
@@ -307,11 +305,79 @@ def distance(outputName="distances.xvg", ff=0, lf=0, Rgm=0):
             for k in line_elements:
                 if float(k) < Rg:
                     count+=1
-            time.append(t)
+            timeArray.append(t)
             ligands_n.append(count)
     file.close()
 
-    return time, ligands_n
+    return timeArray, ligands_n
+
+
+def start_gnu(file):
+    file.write("set terminal pngcairo size 1000,1000 enhanced font 'Verdana-Bold,10'\n")
+    file.write('\n')
+    file.write('#Setting fonts#\n')
+    file.write('\n')
+    file.write("titleFont=\"'Verdana-Bold,20'\"\n")
+    file.write("labelFont=\"'Verdana-Bold,18'\"\n")
+    file.write("ticsFont=\"'Verdana-Bold,16'\"\n")
+    file.write("keyFont=\"'Verdana-Bold,14'\"\n")
+    file.write('\n')
+    file.write('#Setting the pallete#\n')
+    file.write('\n')
+    file.write('set style line 8 lc rgb "black"         lt 1 dt 1 pt 1 lw 3 ps 1    # error bar / Liu2009 / Wu2010\n')
+    file.write('set style line 1 lc rgb "red"           lt 1 dt 1 pt 1 lw 3 ps 1   # 2016H66\n')
+    file.write('set style line 2 lc rgb "blue"          lt 1 dt 1 pt 1 lw 3 ps 1    # Maingi2012\n')
+    file.write('set style line 3 lc rgb "green"         lt 1 dt 1 pt 1 lw 3 ps 1   # Maiti2004 / Jain2013\n')
+    file.write('set style line 4 lc rgb "dark-green"    lt 1 dt 1 pt 1 lw 3 ps 1   # Maiti2005 \n')
+    file.write('set style line 5 lc rgb "dark-cyan"     lt 1 dt 1 pt 1 lw 3 ps 1    # Opitz2006 \n')
+    file.write('set style line 6 lc rgb "#9a0099"       lt 1 dt 1 pt 1 lw 3 ps 1    # Lee2002   (dark-purple)\n')
+    file.write('set style line 7 lc rgb "#f000f2"       lt 1 dt 1 pt 1 lw 3 ps 1    # Caballero2013 (pink)\n')
+    file.write('set style line 9 lc rgb "orange"        lt 1 dt 1 pt 1 lw 3 ps 1    # Barraza2018\n')
+    file.write('set style line 10 lc rgb "#006b00"      lt 1 dt 1 pt 6 lw 3 ps 2    # Gromos-Kanchi2018\n')
+    file.write('set style line 11 lc rgb "red"          lt 1 dt 1 pt 6 lw 3 ps 2    # CHARMM-Kanchi2018\n')
+    file.write('set style line 12 lc rgb "dark-green"   lt 1 dt 2 pt 8 lw 3 ps 2   # Porcar2008 / Topp1998\n')
+    file.write('set style line 13 lc rgb "blue"         lt 1 dt 2 pt 8 lw 3 ps 2   # Prosa1997\n')
+    file.write('set style line 14 lc rgb "dark-orange"  lt 1 dt 2 pt 8 lw 3 ps 2   # Rathgeber2002 / Scherrenberg1998\n')
+    file.write('set style line 15 lc rgb "#646464"      lt 1 dt 1 pt 1 lw 3 ps 1    # Freire2016 (dark-gray)\n')
+    file.write('set style line 16 lc rgb "dark-red"     lt 1 dt 1 pt 1 lw 3 ps 1    # Tanis2009\n')
+    file.write('\n')
+    file.write('#####################\n')
+    file.write('\n')
+    file.write('set key left font @keyFont \n')
+    file.write('\n')
+    file.write('set border front lc 0 lt 1 lw 4\n')
+    file.write('set grid back linecolor 0 lt 0 lw 2\n')
+    file.write('\n')
+    file.write('#set multifile layout 1,3\n')
+    file.write('\n')
+    file.write('#-------------------------------//------------------------------#\n')
+    file.write('\n')
+    file.write('set output "RDF.png"\n')
+    file.write('set xlabel "distance(nm)" font @labelFont\n')
+    file.write('set xtics font @ticsFont\n')
+    file.write('#set xrange [0:5]\n')
+    file.write('\n')
+    file.write('set ylabel "g(r)" font @labelFont\n')
+    file.write('set ytics font @ticsFont\n')
+    file.write('#set yrange [0:4]\n')
+    file.write('#set title "RDF" font @titleFont\n')
+    file.write('plot')
+    file.write('\n')
+    file.write('\n')
+    file.write('##################################################')
+    file.write('\n')
+    file.write('set output "dist.png"\n')
+    file.write('set xlabel "distance(nm)" font @labelFont\n')
+    file.write('set xtics font @ticsFont\n')
+    file.write('#set xrange [0:5]\n')
+    file.write('\n')
+    file.write('set ylabel "number of ligands" font @labelFont\n')
+    file.write('set ytics font @ticsFont\n')
+    file.write('set yrange [0:20]\n')
+    file.write('#set title "# of ligands" font @titleFont\n')
+    file.write('#set title "number of ligands within the dendrimer" font @titleFont\n')
+    file.write('plot')
+    file.write('\n')
 
 
 def clean(list):
@@ -320,15 +386,24 @@ def clean(list):
         trash+=c+" "
     os.system("rm {}".format(trash))
 
+
 def main():
+    startTime=time.time()
     ff=0
     lf=50000
     root="/home/mayk/Documents/Labmmol/Dendrimer/dendriDocker/validation"
 
+    #os.system("gmx514") #Sourcing GROMACS 5.1.4
+
+    res = open("Mean_results",'w')
+    plot = open("plotGnu.plt",'w')
+
+    start_gnu(plot)
+
     cases={
-        "5-Fluorouracil" : [4, 5],
-        "Carbamazepine" : [4],
-        "Quercetin" : [0, 1],
+        # "5-Fluorouracil" : [4, 5],
+        # "Carbamazepine" : [4],
+        "Quercetin" : [0,1,2],
         # "Methotrexate" : [4],
         # "SilybinA" : [2, 3, 4],
     }
@@ -340,72 +415,7 @@ def main():
         "SilybinA" : "SYLI",
     }
 
-    #os.system("gmx514") #Sourcing GROMACS 5.1.4
-
-    res = open("Mean_results",'w')
-    plot = open("plotGnu.plt",'w')
-
-    plot.write("set terminal pngcairo size 2200,600 enhanced font 'Verdana-Bold,10'\n")
-    plot.write('\n')
-    plot.write('#Setting fonts#\n')
-    plot.write('\n')
-    plot.write("titleFont=\"'Verdana-Bold,20'\"\n")
-    plot.write("labelFont=\"'Verdana-Bold,18'\"\n")
-    plot.write("ticsFont=\"'Verdana-Bold,16'\"\n")
-    plot.write("keyFont=\"'Verdana-Bold,14'\"\n")
-    plot.write('\n')
-    plot.write('#Setting the pallete#\n')
-    plot.write('\n')
-    plot.write('set style line 8 lc rgb "black"         lt 1 dt 1 pt 1 lw 3 ps 1    # error bar / Liu2009 / Wu2010\n')
-    plot.write('set style line 1 lc rgb "red"           lt 1 dt 1 pt 1 lw 3 ps 1   # 2016H66\n')
-    plot.write('set style line 2 lc rgb "blue"          lt 1 dt 1 pt 1 lw 3 ps 1    # Maingi2012\n')
-    plot.write('set style line 3 lc rgb "green"         lt 1 dt 1 pt 1 lw 3 ps 1   # Maiti2004 / Jain2013\n')
-    plot.write('set style line 4 lc rgb "dark-green"    lt 1 dt 1 pt 1 lw 3 ps 1   # Maiti2005 \n')
-    plot.write('set style line 5 lc rgb "dark-cyan"     lt 1 dt 1 pt 1 lw 3 ps 1    # Opitz2006 \n')
-    plot.write('set style line 6 lc rgb "#9a0099"       lt 1 dt 1 pt 1 lw 3 ps 1    # Lee2002   (dark-purple)\n')
-    plot.write('set style line 7 lc rgb "#f000f2"       lt 1 dt 1 pt 1 lw 3 ps 1    # Caballero2013 (pink)\n')
-    plot.write('set style line 9 lc rgb "orange"        lt 1 dt 1 pt 1 lw 3 ps 1    # Barraza2018\n')
-    plot.write('set style line 10 lc rgb "#006b00"      lt 1 dt 1 pt 6 lw 3 ps 2    # Gromos-Kanchi2018\n')
-    plot.write('set style line 11 lc rgb "red"          lt 1 dt 1 pt 6 lw 3 ps 2    # CHARMM-Kanchi2018\n')
-    plot.write('set style line 12 lc rgb "dark-green"   lt 1 dt 2 pt 8 lw 3 ps 2   # Porcar2008 / Topp1998\n')
-    plot.write('set style line 13 lc rgb "blue"         lt 1 dt 2 pt 8 lw 3 ps 2   # Prosa1997\n')
-    plot.write('set style line 14 lc rgb "dark-orange"  lt 1 dt 2 pt 8 lw 3 ps 2   # Rathgeber2002 / Scherrenberg1998\n')
-    plot.write('set style line 15 lc rgb "#646464"      lt 1 dt 1 pt 1 lw 3 ps 1    # Freire2016 (dark-gray)\n')
-    plot.write('set style line 16 lc rgb "dark-red"     lt 1 dt 1 pt 1 lw 3 ps 1    # Tanis2009\n')
-    plot.write('\n')
-    plot.write('#####################\n')
-    plot.write('\n')
-    plot.write('set key left font @keyFont \n')
-    plot.write('\n')
-    plot.write('set border front lc 0 lt 1 lw 4\n')
-    plot.write('set grid back linecolor 0 lt 0 lw 2\n')
-    plot.write('\n')
-    plot.write('#set multiplot layout 1,3\n')
-    plot.write('\n')
-    plot.write('#-------------------------------//------------------------------#\n')
-    plot.write('\n')
-    plot.write('set output "RDF.png"\n')
-    plot.write('set xlabel "distance(nm)" font @labelFont\n')
-    plot.write('set xtics font @ticsFont\n')
-    plot.write('#set xrange [0:5]\n')
-    plot.write('\n')
-    plot.write('set ylabel "g(r)" font @labelFont\n')
-    plot.write('set ytics font @ticsFont\n')
-    plot.write('#set yrange [0:4]\n')
-    plot.write('set title "RDF" font @titleFont\n')
-    plot.write('\n')
-    plot.write('set output "dist.png"\n')
-    plot.write('set xlabel "distance(nm)" font @labelFont\n')
-    plot.write('set xtics font @ticsFont\n')
-    plot.write('#set xrange [0:5]\n')
-    plot.write('\n')
-    plot.write('set ylabel "g(r)" font @labelFont\n')
-    plot.write('set ytics font @ticsFont\n')
-    plot.write('#set yrange [0:4]\n')
-    plot.write('set title "# of ligands" font @titleFont\n')
-    plot.write('set title "number of ligands within the dendrimer" font @titleFont\n')
-
-
+    casesCount=0
     for case in cases:
         for G in cases[case]:
             if case == "Carbamazepine":
@@ -428,35 +438,38 @@ def main():
                     print("ALGUMA COISA ERRADA\n")
                     exit()
 
+                casesCount+=1
+                
                 os.system("mkdir -p {}/proc".format(current_case))
                 index(ligand[case])
 
                 Rgm, Rgxm, Rgym, Rgzm = calculate_gyrate(current_case+"/gyrate_{0}G{1}_{2}.xvg".format(case, G, pH), ff, lf)
-                res.write("\n\n<------------>{0}G{1}_{2}<------------>\n".format(case, G, pH))
+                res.write("\n<------------>{0}G{1}_{2}<------------>\n".format(case, G, pH))
                 res.write("\nRg: {0} +/- {1}\n".format(Rgm[0], Rgm[1]))
 
                 delta = calculate_delta(current_case+"/dendCoord_{0}G{1}_{2}.gro".format(case, G, pH), ff, lf)
                 res.write("\ndelta: {0} +/- {1}\n".format(delta[0], delta[1]))
                 
                 rdf(current_case+"/rdf_{0}G{1}_{2}.xvg".format(case, G, pH), ff, lf)
-                plot.write('"{0}/proc/rdf_{1}G{2}_{3}.xvg" using 1:2 title "{1}G{2}-{3}" with lines ls 0, \\'.format(current_case, case, G, pH))
+                plot.write('"{0}/proc/rdf_{1}G{2}_{3}.xvg" using 1:2 title "{1}G{2}-{3}" with lines ls {4}, \\\n'.format(current_case, case, G, pH, casesCount))
                 
-                time, ligands_n = distance(current_case+"/distances_{0}G{1}_{2}.xvg".format(case, G, pH), ff, lf, Rgm[0]+2*Rgm[1])
+                timeArray, ligands_n = distance(current_case+"/distances_{0}G{1}_{2}.xvg".format(case, G, pH), ff, lf, Rgm[0]+2*Rgm[1])
                 file = open("ligands_{0}G{1}_{2}.xvg".format(case, G, pH),'w')
-                for t in range(len(time)):
-                    file.write("{0:10.3f} {1:10d} \n".format(time[t], ligands_n[t]))
+                for t in range(len(timeArray)):
+                    file.write("{0:10.3f} {1:10d} \n".format(timeArray[t], ligands_n[t]))
                 file.close()
-                plot.write('"{0}/proc/ligands_{1}G{2}_{3}.xvg" using 1:2 title "{1}G{2}-{3}" with lines ls 0, \\'.format(current_case, case, G, pH))
+                plot.write('"{0}/proc/ligands_{1}G{2}_{3}.xvg" using ($1/1000):2 title "{1}G{2}-{3}" with lines ls {4}, \\\n'.format(current_case, case, G, pH, casesCount))
 
                 os.system("mv gyrate_{0}G{1}_{2}.xvg rdf_{0}G{1}_{2}.xvg distances_{0}G{1}_{2}.xvg ligands_{0}G{1}_{2}.xvg proc/.".format(case, G, pH))
                 clean(["\#*"])
 
                 os.chdir(root)
                 
-                # plt.plot(time, ligands_n)
+                # plt.plot(timeArray, ligands_n)
                 # plt.show()
     res.close()
     plot.close()
+    print("\nRun took: {}".format(time.time() - startTime))
 
 if __name__ == "__main__":
     main()

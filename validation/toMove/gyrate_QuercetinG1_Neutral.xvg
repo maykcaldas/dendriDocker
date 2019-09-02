@@ -1,4 +1,4 @@
-# This file was created Fri Aug  9 14:08:46 2019
+# This file was created Mon Aug 12 17:38:16 2019
 # Created by:
 #                  :-) GROMACS - gmx gyrate, VERSION 5.1.4 (-:
 # 
@@ -8,7 +8,7 @@
 #   gmx gyrate -s md.tpr -f md.xtc -n index.ndx -b 0 -e 50000 -o /home/mayk/Documents/Labmmol/Dendrimer/dendriDocker/validation/Quercetin/G1/Neutral/tmp/gyrate_QuercetinG1_Neutral.xvg
 # gmx gyrate is part of G R O M A C S:
 #
-# Great Red Owns Many ACres of Sand 
+# Getting the Right Output Means no Artefacts in Calculating Stuff
 #
 @    title "Radius of gyration (total and around axes)"
 @    xaxis  label "Time (ps)"
