@@ -367,7 +367,7 @@ def start_gnu(file):
     file.write('##################################################')
     file.write('\n')
     file.write('set output "dist.png"\n')
-    file.write('set xlabel "distance(nm)" font @labelFont\n')
+    file.write('set xlabel "time(ns)" font @labelFont\n')
     file.write('set xtics font @ticsFont\n')
     file.write('#set xrange [0:5]\n')
     file.write('\n')

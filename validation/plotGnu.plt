@@ -52,7 +52,7 @@ plot "/home/mayk/Documents/Labmmol/Dendrimer/dendriDocker/validation/Quercetin/G
 
 ##################################################
 set output "dist.png"
-set xlabel "distance(nm)" font @labelFont
+set xlabel "time(ns)" font @labelFont
 set xtics font @ticsFont
 #set xrange [0:5]
 
