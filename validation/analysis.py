@@ -247,20 +247,20 @@ def calculate_delta(outputName="output.gro", ff=0, lf=0):
         delta += 1.0-(3.0*(d2/(d1*d1)))
         delta2 += delta*delta
 
-    I = moi/usedFrames
-    Ix = moi_x/usedFrames
-    Ix_dp = (moi_x2/usedFrames - (moi_x/usedFrames)**2 )**0.5
-    Iy = moi_y/usedFrames
-    Iy_dp = (moi_y2/usedFrames - (moi_y/usedFrames)**2 )**0.5
-    Iz = moi_z/usedFrames
-    Iz_dp = (moi_z2/usedFrames - (moi_z/usedFrames)**2 )**0.5
+    # I = moi/usedFrames
+    # Ix = moi_x/usedFrames
+    # Ix_dp = (moi_x2/usedFrames - (moi_x/usedFrames)**2 )**0.5
+    # Iy = moi_y/usedFrames
+    # Iy_dp = (moi_y2/usedFrames - (moi_y/usedFrames)**2 )**0.5
+    # Iz = moi_z/usedFrames
+    # Iz_dp = (moi_z2/usedFrames - (moi_z/usedFrames)**2 )**0.5
 
-    I1=Ix+Iy+Iz
-    I2=Ix*Iy+Ix*Iz+Iy*Iz
-    delta=1.0-(3.0*(I2/(I1*I1)))
+    # I1=Ix+Iy+Iz
+    # I2=Ix*Iy+Ix*Iz+Iy*Iz
+    # delta=1.0-(3.0*(I2/(I1*I1)))
 
     deltam=delta/usedFrames
-    deltam_dp = (delta2/usedFrames - (delta/usedFrames)**2 )**0.5
+    deltam_dp = ((delta2/usedFrames) - (delta/usedFrames)**2 )**0.5
 
     return (delta, deltam_dp)
     
@@ -403,7 +403,7 @@ def main():
     cases={
         # "5-Fluorouracil" : [4, 5],
         # "Carbamazepine" : [4],
-        "Quercetin" : [0,1,2],
+        "Quercetin" : [0],
         # "Methotrexate" : [4],
         # "SilybinA" : [2, 3, 4],
     }
@@ -421,7 +421,7 @@ def main():
             if case == "Carbamazepine":
                 systems=["Acid/F_100", "Acid/F_500", "Neutral"]
             elif case == "Quercetin":
-                systems=["Neutral"]
+                systems=["Neutral", "Acid"]
             else:
                 systems=["Acid", "Neutral"]
             for pH in systems:
@@ -445,10 +445,10 @@ def main():
 
                 Rgm, Rgxm, Rgym, Rgzm = calculate_gyrate(current_case+"/gyrate_{0}G{1}_{2}.xvg".format(case, G, pH), ff, lf)
                 res.write("\n<------------>{0}G{1}_{2}<------------>\n".format(case, G, pH))
-                res.write("\nRg: {0} +/- {1}\n".format(Rgm[0], Rgm[1]))
+                res.write("\nRg: {0:8.4f} +/- {1:8.4f}\n".format(Rgm[0], Rgm[1]))
 
                 delta = calculate_delta(current_case+"/dendCoord_{0}G{1}_{2}.gro".format(case, G, pH), ff, lf)
-                res.write("\ndelta: {0} +/- {1}\n".format(delta[0], delta[1]))
+                res.write("\ndelta: {0:8.4f} +/- {1:8.4f}\n".format(delta[0], delta[1]))
                 
                 rdf(current_case+"/rdf_{0}G{1}_{2}.xvg".format(case, G, pH), ff, lf)
                 plot.write('"{0}/proc/rdf_{1}G{2}_{3}.xvg" using 1:2 title "{1}G{2}-{3}" with lines ls {4}, \\\n'.format(current_case, case, G, pH, casesCount))
@@ -469,7 +469,7 @@ def main():
                 # plt.show()
     res.close()
     plot.close()
-    print("\nRun took: {}".format(time.time() - startTime))
+    print("The run took: {0:.2g} seconds.\n".format(time.time()-startTime))
 
 if __name__ == "__main__":
     main()
