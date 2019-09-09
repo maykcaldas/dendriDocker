@@ -26,7 +26,7 @@ def index(ligand_case):
 
 def calculate_gyrate(outputName="gyrate.xvg", ff=0, lf=0):
     os.system("echo Dendrimer | gmx gyrate  -s md.tpr \
-                                            -f md.xtc \
+                                            -f md.trr \
                                             -n index.ndx \
                                             -b {ff} \
                                             -e {lf} \
@@ -183,7 +183,7 @@ def calcMoi(select, currentFrame):
 
 
 def calculate_delta(outputName="output.gro", ff=0, lf=0):
-    os.system("echo Dendrimer | gmx trjconv -f md.xtc \
+    os.system("echo Dendrimer | gmx trjconv -f md.trr \
                                             -s md.tpr \
                                             -b {ff} \
                                             -e {lf} \
@@ -266,7 +266,7 @@ def calculate_delta(outputName="output.gro", ff=0, lf=0):
     
 
 def rdf(outputName="rdf.xvg", ff=0, lf=0):
-    os.system("gmx rdf  -f md.xtc \
+    os.system("gmx rdf  -f md.trr \
                         -s md.tpr \
                         -n index.ndx \
                         -b {ff} \
@@ -280,8 +280,8 @@ def rdf(outputName="rdf.xvg", ff=0, lf=0):
     # Plot rdf
 
 
-def distance(outputName="distances.xvg", ff=0, lf=0, Rgm=0):
-    os.system("gmx pairdist -f md.xtc \
+def calculate_distance(outputName="distances.xvg", ff=0, lf=0, Rgm=0):
+    os.system("gmx pairdist -f md.trr \
                             -s md.tpr \
                             -n index.ndx \
                             -b {ff} \
@@ -311,6 +311,29 @@ def distance(outputName="distances.xvg", ff=0, lf=0, Rgm=0):
 
     return timeArray, ligands_n
 
+def calculate_ligand(outputName="ligands.xvg", timeArray=[], ligands_n=[], ff=0, lt=0):
+    lig_count = 0
+    lig_sum   = 0
+    lig_sum2  = 0
+    lig       = [0,0]
+
+    file = open(outputName,'w')
+    for t in range(len(timeArray)):
+        file.write("{0:10.3f} {1:10d} \n".format(timeArray[t], ligands_n[t]))
+        if timeArray[t] < ff:
+            continue
+        elif timeArray[t] > lt:
+            continue
+        else:
+            lig_count  += 1
+            lig_sum  += ligands_n[t]
+            lig_sum2 += ligands_n[t] * ligands_n[t]
+    file.close()
+
+    lig[0] = lig_sum/lig_count
+    lig[1] = ((lig_sum2/lig_count) - (lig_sum/lig_count)**2 )**0.5
+
+    return lig
 
 def start_gnu(file):
     file.write("set terminal pngcairo size 1000,1000 enhanced font 'Verdana-Bold,10'\n")
@@ -373,7 +396,7 @@ def start_gnu(file):
     file.write('\n')
     file.write('set ylabel "number of ligands" font @labelFont\n')
     file.write('set ytics font @ticsFont\n')
-    file.write('set yrange [0:20]\n')
+    file.write('#set yrange [0:20]\n')
     file.write('#set title "# of ligands" font @titleFont\n')
     file.write('#set title "number of ligands within the dendrimer" font @titleFont\n')
     file.write('plot')
@@ -389,7 +412,7 @@ def clean(list):
 
 def main():
     startTime=time.time()
-    ff=0
+    ff=40000
     lf=50000
     root="/home/mayk/Documents/Labmmol/Dendrimer/dendriDocker/validation"
 
@@ -403,7 +426,7 @@ def main():
     cases={
         # "5-Fluorouracil" : [4, 5],
         # "Carbamazepine" : [4],
-        "Quercetin" : [0],
+        "Quercetin" : [0, 1],
         # "Methotrexate" : [4],
         # "SilybinA" : [2, 3, 4],
     }
@@ -418,12 +441,15 @@ def main():
     casesCount=0
     for case in cases:
         for G in cases[case]:
+
+            #Selecting systems
             if case == "Carbamazepine":
                 systems=["Acid/F_100", "Acid/F_500", "Neutral"]
             elif case == "Quercetin":
-                systems=["Neutral", "Acid"]
+                systems=["Acid", "Neutral"]
             else:
                 systems=["Acid", "Neutral"]
+            
             for pH in systems:
                 
                 current_case=root+"/{0}/G{1}/{2}/tmp".format(case, G, pH)
@@ -443,23 +469,27 @@ def main():
                 os.system("mkdir -p {}/proc".format(current_case))
                 index(ligand[case])
 
-                Rgm, Rgxm, Rgym, Rgzm = calculate_gyrate(current_case+"/gyrate_{0}G{1}_{2}.xvg".format(case, G, pH), ff, lf)
                 res.write("\n<------------>{0}G{1}_{2}<------------>\n".format(case, G, pH))
+                
+                # Calculate Rg
+                Rgm, Rgxm, Rgym, Rgzm = calculate_gyrate(current_case+"/gyrate_{0}G{1}_{2}.xvg".format(case, G, pH), ff, lf)
                 res.write("\nRg: {0:8.4f} +/- {1:8.4f}\n".format(Rgm[0], Rgm[1]))
 
+                # Calculate asphericity
                 delta = calculate_delta(current_case+"/dendCoord_{0}G{1}_{2}.gro".format(case, G, pH), ff, lf)
                 res.write("\ndelta: {0:8.4f} +/- {1:8.4f}\n".format(delta[0], delta[1]))
                 
+                # Calculate RDF
                 rdf(current_case+"/rdf_{0}G{1}_{2}.xvg".format(case, G, pH), ff, lf)
                 plot.write('"{0}/proc/rdf_{1}G{2}_{3}.xvg" using 1:2 title "{1}G{2}-{3}" with lines ls {4}, \\\n'.format(current_case, case, G, pH, casesCount))
                 
-                timeArray, ligands_n = distance(current_case+"/distances_{0}G{1}_{2}.xvg".format(case, G, pH), ff, lf, Rgm[0]+2*Rgm[1])
-                file = open("ligands_{0}G{1}_{2}.xvg".format(case, G, pH),'w')
-                for t in range(len(timeArray)):
-                    file.write("{0:10.3f} {1:10d} \n".format(timeArray[t], ligands_n[t]))
-                file.close()
-                plot.write('"{0}/proc/ligands_{1}G{2}_{3}.xvg" using ($1/1000):2 title "{1}G{2}-{3}" with lines ls {4}, \\\n'.format(current_case, case, G, pH, casesCount))
+                # Calculate ligands number
+                timeArray, ligands_n = calculate_distance(current_case+"/distances_{0}G{1}_{2}.xvg".format(case, G, pH), 0, lf, Rgm[0]+2*Rgm[1])
+                lig = calculate_ligand(current_case+"/ligands_{0}G{1}_{2}.xvg".format(case, G, pH), timeArray, ligands_n, ff, lf)
+                res.write("\nlotation: {0:8.4f} +/- {1:8.4f}\n".format(lig[0], lig[1]))
+                plot.write('"{0}/proc/ligands_{1}G{2}_{3}.xvg" using ($1/1000):2 title "{1}G{2}-{3}" with lines ls {4}, \\\n'.format(current_case, case, G, pH, casesCount))                
 
+                # Move files
                 os.system("mv gyrate_{0}G{1}_{2}.xvg rdf_{0}G{1}_{2}.xvg distances_{0}G{1}_{2}.xvg ligands_{0}G{1}_{2}.xvg proc/.".format(case, G, pH))
                 clean(["\#*"])
 
