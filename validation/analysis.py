@@ -259,10 +259,14 @@ def calculate_delta(outputName="output.gro", ff=0, lf=0):
     # I2=Ix*Iy+Ix*Iz+Iy*Iz
     # delta=1.0-(3.0*(I2/(I1*I1)))
 
-    deltam=delta/usedFrames
-    deltam_dp = ((delta2/usedFrames) - (delta/usedFrames)**2 )**0.5
+    if usedFrames == 0:
+        deltam    = -1
+        deltam_dp = -1
+    else:
+        deltam    = delta/usedFrames
+        deltam_dp = ((delta2/usedFrames) - (delta/usedFrames)**2.0 )**0.5
 
-    return (delta, deltam_dp)
+    return (deltam, deltam_dp)
     
 
 def rdf(outputName="rdf.xvg", ff=0, lf=0):
@@ -330,8 +334,12 @@ def calculate_ligand(outputName="ligands.xvg", timeArray=[], ligands_n=[], ff=0,
             lig_sum2 += ligands_n[t] * ligands_n[t]
     file.close()
 
-    lig[0] = lig_sum/lig_count
-    lig[1] = ((lig_sum2/lig_count) - (lig_sum/lig_count)**2 )**0.5
+    if lig_count == 0:
+        lig[0] = -1
+        lig[1] = -1
+    else:
+        lig[0] = lig_sum/lig_count
+        lig[1] = ((lig_sum2/lig_count) - (lig_sum/lig_count)**2 )**0.5
 
     return lig
 
@@ -412,7 +420,7 @@ def clean(list):
 
 def main():
     startTime=time.time()
-    ff=40000
+    ff=30000
     lf=50000
     root="/home/mayk/Documents/Labmmol/Dendrimer/dendriDocker/validation"
 
@@ -426,7 +434,7 @@ def main():
     cases={
         # "5-Fluorouracil" : [4, 5],
         # "Carbamazepine" : [4],
-        "Quercetin" : [0, 1],
+        "Quercetin" : [0, 1, 2],
         # "Methotrexate" : [4],
         # "SilybinA" : [2, 3, 4],
     }
@@ -447,6 +455,8 @@ def main():
                 systems=["Acid/F_100", "Acid/F_500", "Neutral"]
             elif case == "Quercetin":
                 systems=["Acid", "Neutral"]
+                if G == 3:
+                    systems=["Neutral"]
             else:
                 systems=["Acid", "Neutral"]
             
