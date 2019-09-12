@@ -60,15 +60,11 @@ set ytics font @ticsFont
 #set title "# of ligands" font @titleFont
 #set title "number of ligands within the dendrimer" font @titleFont
 plot
-"/home/mayk/Documents/Labmmol/Dendrimer/dendriDocker/validation/Quercetin/G0/Acid/tmp/proc/rdf_QuercetinG0_Acid.xvg" using 1:2 title "QuercetinG0-Acid" with lines ls 1, \
-"/home/mayk/Documents/Labmmol/Dendrimer/dendriDocker/validation/Quercetin/G0/Acid/tmp/proc/ligands_QuercetinG0_Acid.xvg" using ($1/1000):2 title "QuercetinG0-Acid" with lines ls 1, \
-"/home/mayk/Documents/Labmmol/Dendrimer/dendriDocker/validation/Quercetin/G0/Neutral/tmp/proc/rdf_QuercetinG0_Neutral.xvg" using 1:2 title "QuercetinG0-Neutral" with lines ls 2, \
-"/home/mayk/Documents/Labmmol/Dendrimer/dendriDocker/validation/Quercetin/G0/Neutral/tmp/proc/ligands_QuercetinG0_Neutral.xvg" using ($1/1000):2 title "QuercetinG0-Neutral" with lines ls 2, \
-"/home/mayk/Documents/Labmmol/Dendrimer/dendriDocker/validation/Quercetin/G1/Acid/tmp/proc/rdf_QuercetinG1_Acid.xvg" using 1:2 title "QuercetinG1-Acid" with lines ls 3, \
-"/home/mayk/Documents/Labmmol/Dendrimer/dendriDocker/validation/Quercetin/G1/Acid/tmp/proc/ligands_QuercetinG1_Acid.xvg" using ($1/1000):2 title "QuercetinG1-Acid" with lines ls 3, \
-"/home/mayk/Documents/Labmmol/Dendrimer/dendriDocker/validation/Quercetin/G1/Neutral/tmp/proc/rdf_QuercetinG1_Neutral.xvg" using 1:2 title "QuercetinG1-Neutral" with lines ls 4, \
-"/home/mayk/Documents/Labmmol/Dendrimer/dendriDocker/validation/Quercetin/G1/Neutral/tmp/proc/ligands_QuercetinG1_Neutral.xvg" using ($1/1000):2 title "QuercetinG1-Neutral" with lines ls 4, \
-"/home/mayk/Documents/Labmmol/Dendrimer/dendriDocker/validation/Quercetin/G2/Acid/tmp/proc/rdf_QuercetinG2_Acid.xvg" using 1:2 title "QuercetinG2-Acid" with lines ls 5, \
-"/home/mayk/Documents/Labmmol/Dendrimer/dendriDocker/validation/Quercetin/G2/Acid/tmp/proc/ligands_QuercetinG2_Acid.xvg" using ($1/1000):2 title "QuercetinG2-Acid" with lines ls 5, \
-"/home/mayk/Documents/Labmmol/Dendrimer/dendriDocker/validation/Quercetin/G2/Neutral/tmp/proc/rdf_QuercetinG2_Neutral.xvg" using 1:2 title "QuercetinG2-Neutral" with lines ls 6, \
-"/home/mayk/Documents/Labmmol/Dendrimer/dendriDocker/validation/Quercetin/G2/Neutral/tmp/proc/ligands_QuercetinG2_Neutral.xvg" using ($1/1000):2 title "QuercetinG2-Neutral" with lines ls 6, \
+"/home/mayk/Documents/Labmmol/Dendrimer/dendriDocker/validation/Quercetin.test/G0/Acid/tmp/proc/rdf_Quercetin.testG0_Acid.xvg" using 1:2 title "Quercetin.testG0-Acid" with lines ls 1, \
+"/home/mayk/Documents/Labmmol/Dendrimer/dendriDocker/validation/Quercetin.test/G0/Acid/tmp/proc/ligands_Quercetin.testG0_Acid.xvg" using ($1/1000):2 title "Quercetin.testG0-Acid" with lines ls 1, \
+"/home/mayk/Documents/Labmmol/Dendrimer/dendriDocker/validation/Quercetin.test/G0/Neutral/tmp/proc/rdf_Quercetin.testG0_Neutral.xvg" using 1:2 title "Quercetin.testG0-Neutral" with lines ls 2, \
+"/home/mayk/Documents/Labmmol/Dendrimer/dendriDocker/validation/Quercetin.test/G0/Neutral/tmp/proc/ligands_Quercetin.testG0_Neutral.xvg" using ($1/1000):2 title "Quercetin.testG0-Neutral" with lines ls 2, \
+"/home/mayk/Documents/Labmmol/Dendrimer/dendriDocker/validation/Quercetin.test/G1/Acid/tmp/proc/rdf_Quercetin.testG1_Acid.xvg" using 1:2 title "Quercetin.testG1-Acid" with lines ls 3, \
+"/home/mayk/Documents/Labmmol/Dendrimer/dendriDocker/validation/Quercetin.test/G1/Acid/tmp/proc/ligands_Quercetin.testG1_Acid.xvg" using ($1/1000):2 title "Quercetin.testG1-Acid" with lines ls 3, \
+"/home/mayk/Documents/Labmmol/Dendrimer/dendriDocker/validation/Quercetin.test/G1/Neutral/tmp/proc/rdf_Quercetin.testG1_Neutral.xvg" using 1:2 title "Quercetin.testG1-Neutral" with lines ls 4, \
+"/home/mayk/Documents/Labmmol/Dendrimer/dendriDocker/validation/Quercetin.test/G1/Neutral/tmp/proc/ligands_Quercetin.testG1_Neutral.xvg" using ($1/1000):2 title "Quercetin.testG1-Neutral" with lines ls 4, \

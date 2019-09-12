@@ -434,14 +434,14 @@ def main():
     cases={
         # "5-Fluorouracil" : [4, 5],
         # "Carbamazepine" : [4],
-        "Quercetin" : [0, 1, 2, 3],
+        "Quercetin.test" : [0, 1, 2, 3],
         # "Methotrexate" : [4],
         # "SilybinA" : [2, 3, 4],
     }
     ligand={
         "5-Fluorouracil" : "2S04",
         "Carbamazepine" : "BDRM",
-        "Quercetin" : "VV98",
+        "Quercetin.test" : "VV98",
         "Methotrexate" : "6QRE",
         "SilybinA" : "SYLI",
     }
