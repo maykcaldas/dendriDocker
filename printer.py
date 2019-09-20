@@ -56,7 +56,7 @@ class printer():
         # f.write('\n')
         
         for i in range(int(args['nligand'])):
-            f.write('rest_{0}: RESTRAINT ARG=d_{0} AT=0.25 KAPPA=500.0\n'.format(i+1))
+            f.write('rest_{0}: RESTRAINT ARG=d_{0} AT=0.25 KAPPA={1}\n'.format(i+1, args['force']))
         f.write('\n')
 
         f.write('# Dock plumed file successfully written by dendrimerDocker')
@@ -136,7 +136,7 @@ class printer():
         f.write('${gmx} editconf \\\n')
         f.write('\t \t -f {0} \\\n'.format(args['dendCoord']))
         f.write('\t \t -c \\\n')
-        f.write('\t \t -d 0.3 \\\n')
+        f.write('\t \t -d 0.25 \\\n')
         f.write('\t \t -bt cubic \\\n')
         f.write('\t \t -o box.gro\n')
         f.write('\n')
@@ -204,6 +204,8 @@ class printer():
         f.write('\t \t -pname NA+ \\\n')
         f.write('\t \t -nname CL- \\\n')
         f.write('\t \t -neutral \\\n')
+        # f.write('\t \t -nn {0} \\\n'.format(2**(2+int(args['dendGeneration']))) )
+        # f.write('\t \t -np {0} \\\n'.format(args['nligand']))
         f.write('\t \t -o ion.gro \n')
         f.write('\n')
         
