@@ -44,8 +44,15 @@ set xtics font @ticsFont
 
 set ylabel "g(r)" font @labelFont
 set ytics font @ticsFont
-#set yrange [0:4]
-plot
+set yrange [0:50]
+plot "/home/mayk/Documents/Labmmol/Dendrimer/dendriDocker/validation/RESULTS/proc/rdfLig_SilybinAG2_n20.xvg" using 1:2 title "Lig-SilybinAG2-n20" with lines ls 1, \
+"/home/mayk/Documents/Labmmol/Dendrimer/dendriDocker/validation/RESULTS/proc/rdfWat_SilybinAG2_n20.xvg" using 1:2 title "Water-SilybinAG2-n20" with lines ls 3, \
+"/home/mayk/Documents/Labmmol/Dendrimer/dendriDocker/validation/RESULTS/proc/rdfTer_SilybinAG2_n20.xvg" using 1:2 title "Ter-SilybinAG2-n20" with lines ls 2, \
+"/home/mayk/Documents/Labmmol/Dendrimer/dendriDocker/validation/RESULTS/proc/rdfDend_SilybinAG2_n20.xvg" using 1:2 title "Dend-SilybinAG2-n20" with lines ls 4, \
+#"/home/mayk/Documents/Labmmol/Dendrimer/dendriDocker/validation/RESULTS/proc/rdfLig_SilybinAG2_n25.xvg" using 1:2 title "Lig-SilybinAG2-n25" with lines ls 1, \
+#"/home/mayk/Documents/Labmmol/Dendrimer/dendriDocker/validation/RESULTS/proc/rdfTer_SilybinAG2_n25.xvg" using 1:2 title "Water-SilybinAG2-n25" with lines ls 2, \
+#"/home/mayk/Documents/Labmmol/Dendrimer/dendriDocker/validation/RESULTS/proc/rdfWat_SilybinAG2_n25.xvg" using 1:2 title "Ter-SilybinAG2-n25" with lines ls 3, \
+#"/home/mayk/Documents/Labmmol/Dendrimer/dendriDocker/validation/RESULTS/proc/rdfDend_SilybinAG2_n25.xvg" using 1:2 title "Dend-SilybinAG2-n25" with lines ls 4, \
 
 ##################################################
 set output "dist.png"
@@ -56,18 +63,20 @@ set xtics font @ticsFont
 set ylabel "number of ligands" font @labelFont
 set ytics font @ticsFont
 #set yrange [0:20]
-plot
+plot "/home/mayk/Documents/Labmmol/Dendrimer/dendriDocker/validation/RESULTS/proc/ligands_SilybinAG2_n20.xvg" using ($1/1000):2 title "SilybinAG2-n20" with lines ls 1, \
+#"/home/mayk/Documents/Labmmol/Dendrimer/dendriDocker/validation/RESULTS/proc/ligands_SilybinAG2_n25.xvg" using ($1/1000):2 title "SilybinAG2-n25" with lines ls 2, \
+
 ##################################################
 set output "ligs.png"
+set key right font @keyFont 
+
 set xlabel "time(ns)" font @labelFont
 set xtics font @ticsFont
 #set xrange [0:5]
 
 set ylabel "distance of ligands" font @labelFont
 set ytics font @ticsFont
-#set yrange [0:20]
-plot
-"/home/mayk/Documents/Labmmol/Dendrimer/dendriDocker/validation/RESULTS/proc/rdfLig_SilybinAG2_n20.xvg" using 1:2 title "Lig_SilybinAG2-n20" with lines ls 1, \
-"/home/mayk/Documents/Labmmol/Dendrimer/dendriDocker/validation/RESULTS/proc/rdfTer_SilybinAG2_n20.xvg" using 1:2 title "Ter_SilybinAG2-n20" with lines ls 1, \
-"/home/mayk/Documents/Labmmol/Dendrimer/dendriDocker/validation/RESULTS/proc/rdfWat_SilybinAG2_n20.xvg" using 1:2 title "Water_SilybinAG2-n20" with lines ls 1, \
-"/home/mayk/Documents/Labmmol/Dendrimer/dendriDocker/validation/RESULTS/proc/rdfDend_SilybinAG2_n20.xvg" using 1:2 title "Dend_SilybinAG2-n20" with lines ls 1, \
+#set yrange [0:30]
+
+#plot for [n=2:*] "/home/mayk/Documents/Labmmol/Dendrimer/dendriDocker/validation/RESULTS/proc/distances_SilybinAG2_n20.xvg" using ($1/1000):n title sprintf("Lig%d", n-1) with lines lw 3, \
+#for [n=2:*] "/home/mayk/Documents/Labmmol/Dendrimer/dendriDocker/validation/RESULTS/proc/distances_SilybinAG2_n25.xvg" using ($1/1000):n title sprintf("Lig%d", n-1) with lines lw 3, \

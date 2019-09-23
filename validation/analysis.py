@@ -19,6 +19,10 @@ def index(ligand_case):
     name 1 Dendrimer \n\
     r {ligand} \n\
     name 2 ligand \n\
+    r TER \n\
+    name 3 TER \n\
+    r SOL \n\
+    name 4 SOL \n\
     \n\
     q \n\
     !".format(ligand=ligand_case))
@@ -276,9 +280,10 @@ def calculate_rdf(outputName="rdf.xvg", selection="ligand", ff=0, lf=0):
                         -b {ff} \
                         -e {lf} \
                         -ref Dendrimer \
+                        -selrpos whole_mol_com \
                         -sel {selection} \
-                        -bin 0.002 \
-                        -selrpos res_com \
+                        -seltype res_com \
+                        -bin 0.005 \
                         -o {output}".format(output=outputName, selection=selection, ff=ff, lf=lf))
 
 
@@ -428,9 +433,9 @@ def clean(list):
 
 def main():
     startTime=time.time()
-    ff=0
+    ff=40000
     lf=50000
-    root="/home/mayk/Documents/Labmmol/Dendrimer/dendriDocker/validation"
+    root="/home/mayk/Documents/Labmmol/Dendrimer/dendriDocker/validation/RESULTS"
 
     #os.system("gmx514") #Sourcing GROMACS 5.1.4
 
@@ -442,89 +447,97 @@ def main():
     cases={
         # "5-Fluorouracil" : [4, 5],
         # "Carbamazepine" : [4],
-        "Quercetin" : [0,1,2,3],
+        "Quercetin" : [
+                        # (0, ["n3","n10"]),
+                        # (1, ["n7","n20"]),
+                        # (2, ["n19","n24"]),
+                        # (3, ["n34","n39"]),
+                    ],
         # "Methotrexate" : [4],
-        # "SilybinA" : [2, 3, 4],
+        "SilybinA" : [
+                        (2, ["n20"]),   #,"n25"]),
+                        # (3, ["n32","n37"]),
+                        # (4, ["n20","n25"])
+                    ],
     }
     ligand={
         "5-Fluorouracil" : "2S04",
         "Carbamazepine" : "BDRM",
         "Quercetin" : "VV98",
         "Methotrexate" : "6QRE",
-        "SilybinA" : "SYLI",
+        "SilybinA" : "08C3",
     }
 
     casesCount=0
     for case in cases:
-        for G in cases[case]:
-
+        for k in cases[case]:
+            G=k[0]
+            systems=k[1]
+            
             #Selecting systems
-            if case == "Carbamazepine":
-                systems=["Acid/F_100", "Acid/F_500", "Neutral"]
-            elif case == "Quercetin":
-                systems=["Acid", "Neutral"]
-            else:
-                systems=["Acid", "Neutral"]
+            # if case == "SilybinA":
+            #     systems=["Acid/F_100", "Acid/F_500", "Neutral"]
+            # elif case == "Quercetin":
+            #     systems=["Acid", "Neutral"]
+            # else:
+            #     systems=["Acid", "Neutral"]
            
-            systems = ["Neutral"]
-            for pH in systems:
+            for system in systems:
                 
-                current_case=root+"/{0}/G{1}/{2}/tmp".format(case, G, pH)
+                current_case=root+"/{0}/G{1}/{2}/tmp".format(case, G, system)
                 os.chdir(current_case)
                 os.system("pwd")
 
-                if pH[0:4] == "Acid":
-                    pH="Acid"
-                elif pH[0:7] == "Neutral":
-                    pH="Neutral"
-                else:
-                    print("ALGUMA COISA ERRADA\n")
-                    exit()
+                # if pH[0:4] == "Acid":
+                #     pH="Acid"
+                # elif pH[0:7] == "Neutral":
+                #     pH="Neutral"
+                # else:
+                #     print("ALGUMA COISA ERRADA\n")
+                #     exit()
 
                 casesCount+=1
                 
-                os.system("mkdir -p {}/proc".format(current_case))
+                os.system("mkdir -p {}/proc".format(root))
                 index(ligand[case])
 
-                res.write("\n<------------>{0}G{1}_{2}<------------>\n".format(case, G, pH))
+                res.write("\n<------------>{0}G{1}_{2}<------------>\n".format(case, G, system))
                 
                 # Calculate Rg
-                Rgm, Rgxm, Rgym, Rgzm = calculate_gyrate(current_case+"/gyrate_{0}G{1}_{2}.xvg".format(case, G, pH), ff, lf)
+                Rgm, Rgxm, Rgym, Rgzm = calculate_gyrate(current_case+"/gyrate_{0}G{1}_{2}.xvg".format(case, G, system), ff, lf)
                 res.write("\nRg: {0:8.4f} +/- {1:8.4f}\n".format(Rgm[0], Rgm[1]))
 
                 # Calculate asphericity
-                delta = calculate_delta(current_case+"/dendCoord_{0}G{1}_{2}.gro".format(case, G, pH), ff, lf)
-                res.write("\ndelta: {0:8.4f} +/- {1:8.4f}\n".format(delta[0], delta[1]))
+                # delta = calculate_delta(current_case+"/dendCoord_{0}G{1}_{2}.gro".format(case, G, system), ff, lf)
+                # res.write("\ndelta: {0:8.4f} +/- {1:8.4f}\n".format(delta[0], delta[1]))
                 
                 # Calculate RDF
                 # Ligand
-                calculate_rdf(current_case+"/rdfLig_{0}G{1}_{2}.xvg".format(case, G, pH),ligand , ff, lf)
-                plot.write('"{0}/proc/rdf_{1}G{2}_{3}.xvg" using 1:2 title "{1}G{2}-{3}" with lines ls {4}, \\\n'.format(current_case, case, G, pH, casesCount))
+                calculate_rdf(current_case+"/rdfLig_{0}G{1}_{2}.xvg".format(case, G, system), 'ligand', ff, lf)
+                plot.write('"{0}/proc/rdfLig_{1}G{2}_{3}.xvg" using 1:2 title "Lig_{1}G{2}-{3}" with lines ls {4}, \\\n'.format(root, case, G, system, casesCount))
                 # Terminal monomer
-                calculate_rdf(current_case+"/rdfTer_{0}G{1}_{2}.xvg".format(case, G, pH),water , ff, lf)
-                plot.write('"{0}/proc/rdf_{1}G{2}_{3}.xvg" using 1:2 title "{1}G{2}-{3}" with lines ls {4}, \\\n'.format(current_case, case, G, pH, casesCount))
+                calculate_rdf(current_case+"/rdfTer_{0}G{1}_{2}.xvg".format(case, G, system), 'TER', ff, lf)
+                plot.write('"{0}/proc/rdfTer_{1}G{2}_{3}.xvg" using 1:2 title "Ter_{1}G{2}-{3}" with lines ls {4}, \\\n'.format(root, case, G, system, casesCount))
                 # Water molecules
-                calculate_rdf(current_case+"/rdfWat_{0}G{1}_{2}.xvg".format(case, G, pH),terminal , ff, lf)
-                plot.write('"{0}/proc/rdf_{1}G{2}_{3}.xvg" using 1:2 title "{1}G{2}-{3}" with lines ls {4}, \\\n'.format(current_case, case, G, pH, casesCount))
+                calculate_rdf(current_case+"/rdfWat_{0}G{1}_{2}.xvg".format(case, G, system), 'SOL', ff, lf)
+                plot.write('"{0}/proc/rdfWat_{1}G{2}_{3}.xvg" using 1:2 title "Water_{1}G{2}-{3}" with lines ls {4}, \\\n'.format(root, case, G, system, casesCount))
                 # Dendrimer
-                calculate_rdf(current_case+"/rdfDend_{0}G{1}_{2}.xvg".format(case, G, pH),terminal , ff, lf)
-                plot.write('"{0}/proc/rdfDend_{1}G{2}_{3}.xvg" using 1:2 title "{1}G{2}-{3}" with lines ls {4}, \\\n'.format(current_case, case, G, pH, casesCount))
+                calculate_rdf(current_case+"/rdfDend_{0}G{1}_{2}.xvg".format(case, G, system), 'Dendrimer', ff, lf)
+                plot.write('"{0}/proc/rdfDend_{1}G{2}_{3}.xvg" using 1:2 title "Dend_{1}G{2}-{3}" with lines ls {4}, \\\n'.format(root, case, G, system, casesCount))
                 
                 # Calculate ligands number
-                timeArray, ligands_n = calculate_distance(current_case+"/distances_{0}G{1}_{2}.xvg".format(case, G, pH), 0, lf, Rgm[0]+2*Rgm[1])
-                lig = calculate_ligand(current_case+"/ligands_{0}G{1}_{2}.xvg".format(case, G, pH), timeArray, ligands_n, ff, lf)
-                res.write("\nlotation: {0:8.4f} +/- {1:8.4f}\n".format(lig[0], lig[1]))
-                plot.write('"{0}/proc/ligands_{1}G{2}_{3}.xvg" using ($1/1000):2 title "{1}G{2}-{3}" with lines ls {4}, \\\n'.format(current_case, case, G, pH, casesCount))
-                plot.write('plot for [n=2:*] "{0}/proc/distances_{1}G{2}_{3}.xvg" using ($1/1000):2 title sprintf("Lig%d", n-1) with lines lt 1 dt 1 pt 1 lw 3 ps 1, \\\n'.format(current_case, case, G, pH, casesCount))
+                # timeArray, ligands_n = calculate_distance(current_case+"/distances_{0}G{1}_{2}.xvg".format(case, G, system), 0, lf, Rgm[0]+2*Rgm[1])
+                # lig = calculate_ligand(current_case+"/ligands_{0}G{1}_{2}.xvg".format(case, G, system), timeArray, ligands_n, ff, lf)
+                # res.write("\nlotation: {0:8.4f} +/- {1:8.4f}\n".format(lig[0], lig[1]))
+                # plot.write('"{0}/proc/ligands_{1}G{2}_{3}.xvg" using ($1/1000):2 title "{1}G{2}-{3}" with lines ls {4}, \\\n'.format(root, case, G, system, casesCount))
+                # plot.write('plot for [n=2:*] "{0}/proc/distances_{1}G{2}_{3}.xvg" using ($1/1000):n title sprintf("Lig%d", n-1) with lines lw 3, \\\n'.format(root, case, G, system, casesCount))
 
                 # Move files
-                os.system("mv gyrate_{0}G{1}_{2}.xvg rdf_{0}G{1}_{2}.xvg distances_{0}G{1}_{2}.xvg ligands_{0}G{1}_{2}.xvg proc/.".format(case, G, pH))
+                os.system("mv gyrate_{0}G{1}_{2}.xvg rdf*_{0}G{1}_{2}.xvg distances_{0}G{1}_{2}.xvg ligands_{0}G{1}_{2}.xvg {3}/proc/.".format(case, G, system, root))
                 clean(["\#*"])
 
                 os.chdir(root)
                 
-                # plt.plot(timeArray, ligands_n)
-                # plt.show()
     res.close()
     plot.close()
     print("The run took: {0:.2g} seconds.\n".format(time.time()-startTime))
