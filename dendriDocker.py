@@ -12,6 +12,7 @@ from printer import printer
 import argparse
 import time
 import os
+# import gromacsBuilding # Future plans to automatize the whole process.
 
 
 def main():
@@ -32,11 +33,11 @@ def main():
     parser.add_argument('--host', help="Name of the host molecule", default="Dendrimer")
     parser.add_argument('--ligand', help="Name of the molecule to be docked", default="Ligand")
     parser.add_argument('--nligand', help="Number of ligand molecules to be docked", default="10")
-    parser.add_argument('--atomInDend', help="Number of atoms in your model dendrimer", default=None)
-    parser.add_argument('--atomInLigand', help="Number of atoms in your model ligand", default=None)
+    parser.add_argument('--atomInDend', help="Number of atoms in your model of dendrimer", default=None)
+    parser.add_argument('--atomInLigand', help="Number of atoms in your model of ligand", default=None)
     parser.add_argument('--ligandCoord', help="Path to the ligand coordinates file", default="ligand.gro")
     parser.add_argument('--dendCoord', help="Path to the dendrimer coordinates file", default="dend.gro")
-    parser.add_argument('--dendGeneration', help="Dendrimer generation", default="3")
+    # parser.add_argument('--dendGeneration', help="Dendrimer generation", default="3")
     parser.add_argument('--ligandTop', help="Path to the ligand topology file", default="ligand.itp")
     parser.add_argument('--dendTop', help="Path to the dendrimer topology file", default="dend.itp")
     parser.add_argument('--FFPath', help="Path to the forcefield directory", default=None)
@@ -46,10 +47,17 @@ def main():
     parser.add_argument('--topolOut', help="Output name of the topology file", default='topol.top')
     parser.add_argument('--dockOut', help="Output name of the docking file", default='plumed_dock.dat')
     parser.add_argument('--runOut', help="Output name of the run file", default='run.sh')
-    parser.add_argument('--force', help="Force constant of the harmonic potential in steered dynamics", default="500.0")
-    #parser.add_argument('--walls', help="Number of atoms in your model ligand")
-
+    parser.add_argument('--force', help="Force constant of the harmonic potential (or the slope in linear potential) in steered dynamics", default="500.0")
+    parser.add_argument('--method', help="Docking method: harmonic, linear or shell", default="harmonic")
+    
     args=vars(parser.parse_args())
+
+    #Getting the atomInDend
+    if args['dendCoord'][-4:] == '.gro':
+        f=open(args['dendCoord'])
+        f.readline()
+        args['atomInDend']=f.readline().strip()
+        f.close()
 
     noneInArgs=False
     for k in args:
@@ -59,11 +67,15 @@ def main():
     if noneInArgs == True:
         error("There were some undefined variables.")
     
+    if not args['method'] in ['harmonic','linear','shell', 'harmonicWall', 'linearWall']:
+        error("This is not a valid method.")
+
     print("The used list of parameters are:\n")
     for i in args:
         print("{0:15s}: {1}".format(i, args[i]))
     
     print("\n")    
+
     prt=printer()
     prt.printPlumedDock(args)
     prt.printTop(args)

@@ -1,0 +1,30 @@
+BOX	 mdp input
+	 {'file_name': None}
+	 run input
+	 {'init_struct': 'PAMAM_G0_Neutral.gro', 'run_file': 'test/runmd.sh', 'd': '1.0', 'output': 'box'}
+
+ION	 mdp input
+	 {'file_name': None}
+	 run input
+	 {'cl': '0', 'system': 'box', 'neutral': True, 'run_file': 'runmd.sh', 'output': 'ion', 'na': '0'}
+
+EM	 mdp input
+	 {'emtol': '100.0', 'file_name': 'em.mdp', 'nsteps': '5000', 'emstep': '0.001'}
+	 run input
+	 {'output': 'em1', 'system': 'ion', 'run_file': 'runmd.sh'}
+
+NVT	 mdp input
+	 {'temp': '100', 'dt': '0.002', 'file_name': 'nvt100.mdp', 'nsteps': '25000000', 'cont': 'no'}
+	 run input
+	 {'system': 'em1', 'mpithreads': '8', 'run_file': 'runmd.sh', 'mdp': 'path/to/mdp', 'output': 'nvt100', 'mpi': True}
+
+NPT	 mdp input
+	 {'temp': '100', 'press': '1', 'cont': 'yes', 'dt': '0.002', 'file_name': 'npt100.mdp', 'nsteps': '100000'}
+	 run input
+	 {'system': 'nvt100', 'mpithreads': '8', 'run_file': 'runmd.sh', 'mdp': 'path/to/mdp', 'output': 'npt100', 'mpi': True}
+
+MD	 mdp input
+	 {'temp': '298', 'press': '1', 'cont': 'yes', 'dt': '0.002', 'file_name': 'md.mdp', 'nsteps': '100000'}
+	 run input
+	 {'system': 'npt100', 'mpithreads': '8', 'run_file': 'runmd.sh', 'mdp': 'path/to/mdp', 'output': 'md', 'mpi': True}
+

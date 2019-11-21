@@ -55,8 +55,38 @@ class printer():
         #         f.write('\n')
         # f.write('\n')
         
-        for i in range(int(args['nligand'])):
-            f.write('rest_{0}: RESTRAINT ARG=d_{0} AT=0.25 KAPPA={1}\n'.format(i+1, args['force']))
+        if args['method'] == "harmonic":
+            for i in range(int(args['nligand'])):
+                f.write('rest_{0}: RESTRAINT ARG=d_{0} AT=1.10 KAPPA={1}\n'.format(i+1, args['force']))
+
+        elif args['method'] == "linear":
+            for i in range(int(args['nligand'])):
+                f.write('rest_{0}: RESTRAINT ARG=d_{0} AT=1.10 SLOPE={1}\n'.format(i+1, args['force']))
+        
+        elif args['method'] == "harmonicWall":
+            for i in range(int(args['nligand'])):
+                f.write('rest_{0}: UPPER_WALLS ARG=d_{0} AT=0.0 KAPPA={1} EXP=2 EPS=2\n'.format(i+1, args['force']))
+        
+        elif args['method'] == "linearWall":
+            for i in range(int(args['nligand'])):
+                f.write('rest_{0}: UPPER_WALLS ARG=d_{0} AT=0.0 KAPPA={1} EXP=1 EPS=1\n'.format(i+1, args['force']))
+        
+        elif args['method'] == "shell":
+            for i in range(int(args['nligand'])):
+                if i < 0.05*int(args['nligand']):
+                    f.write('rest_{0}: RESTRAINT ARG=d_{0} AT=0.0 KAPPA={1}\n'.format(i+1, args['force']))
+                elif i < 0.15*int(args['nligand']):
+                    f.write('rest_{0}: RESTRAINT ARG=d_{0} AT=0.2 KAPPA={1}\n'.format(i+1, args['force']))
+                elif i < 0.30*int(args['nligand']):
+                    f.write('rest_{0}: RESTRAINT ARG=d_{0} AT=0.4 KAPPA={1}\n'.format(i+1, args['force']))
+                elif i < 0.45*int(args['nligand']):
+                    f.write('rest_{0}: RESTRAINT ARG=d_{0} AT=0.6 KAPPA={1}\n'.format(i+1, args['force']))
+                elif i < 0.60*int(args['nligand']):
+                    f.write('rest_{0}: RESTRAINT ARG=d_{0} AT=0.8 KAPPA={1}\n'.format(i+1, args['force']))
+                elif i < 0.75*int(args['nligand']):
+                    f.write('rest_{0}: RESTRAINT ARG=d_{0} AT=1.0 KAPPA={1}\n'.format(i+1, args['force']))
+                else:
+                    f.write('rest_{0}: RESTRAINT ARG=d_{0} AT=1.2 KAPPA={1}\n'.format(i+1, args['force']))
         f.write('\n')
 
         f.write('# Dock plumed file successfully written by dendrimerDocker')
@@ -136,7 +166,7 @@ class printer():
         f.write('${gmx} editconf \\\n')
         f.write('\t \t -f {0} \\\n'.format(args['dendCoord']))
         f.write('\t \t -c \\\n')
-        f.write('\t \t -d 0.25 \\\n')
+        f.write('\t \t -d 1.5 \\\n')
         f.write('\t \t -bt cubic \\\n')
         f.write('\t \t -o box.gro\n')
         f.write('\n')
@@ -153,7 +183,7 @@ class printer():
         f.write('${gmx} editconf \\\n')
         f.write('\t \t -f box.gro \\\n')
         f.write('\t \t -c \\\n')
-        f.write('\t \t -d 0.3 \\\n')
+        f.write('\t \t -d 0.2 \\\n')
         f.write('\t \t -bt cubic \\\n')
         f.write('\t \t -o box1.gro\n')
         f.write('\n')
