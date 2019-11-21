@@ -67,7 +67,6 @@ def write_run_em(run_file, system, output):
     run_file.write('\n')
     
     run_file.write('${PROGRAM} mdrun_file \n')
-    # run_file.write('    -s em1.tpr \n')
     run_file.write('    -deffnm {output}\n'.format(output=output))
     run_file.write('\n')
     run_file.write('\n')
@@ -86,7 +85,6 @@ def write_run_nvt(run_file, mdp, system, output, mpi=True, mpithreads=8):
         run_file.write('mpirun -n {mpithreads} ${PROGRAM} mdrun \n'.format(mpithreads=mpithreads, PROGRAM="PROGRAM"))
     else:
         run_file.write('${PROGRAM} mdrun \n')
-    # run_file.write('         -s nvt.tpr \n')
     run_file.write('         -deffnm {output}\n'.format(output=output))
     run_file.write('\n')
 

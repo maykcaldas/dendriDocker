@@ -41,6 +41,7 @@ def write_submission(file_name, job_name, job_file):
     job.write('# run\n')
     job.write('{job_file}'.format(job_file=job_file))
 
+
 def write_log(log_file, workFlow):
 
     print("The workFlow is:")
@@ -62,6 +63,7 @@ def write_log(log_file, workFlow):
         log.write("\t {0}\n".format(step[2]))
         log.write("\n")
 
+
 def read_input(file_name):
     try:
         file=open(file_name,"r")
@@ -74,12 +76,13 @@ def main():
     
     workFlow=workflow.workFlow()
     
-    write_log("log.file",workFlow)
+    write_log("log.file", workFlow)
 
     write_mdp(workFlow)
     write_run(run_file='runmd.sh', workdir='path/to/work/dir', program='path/to/gromacs', init_struct='initial_structure', topo='topology', mdp='path/to/mdp/directory', workflow=workFlow)
-    write_submission( file_name="runjob", job_name="TEST1", job_file="runmd.sh")
-    
+    write_submission(file_name="runjob", job_name="TEST1", job_file="runmd.sh")
+
+
 def error(message):
     print("An error occurred.")
     print(message)

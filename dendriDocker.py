@@ -12,7 +12,7 @@ from printer import printer
 import argparse
 import time
 import os
-# import gromacsBuilding # Future plans to automatize the whole process.
+import sysBuilding # Future plans to automatize the whole process.
 
 
 def main():
@@ -48,7 +48,7 @@ def main():
     parser.add_argument('--dockOut', help="Output name of the docking file", default='plumed_dock.dat')
     parser.add_argument('--runOut', help="Output name of the run file", default='run.sh')
     parser.add_argument('--force', help="Force constant of the harmonic potential (or the slope in linear potential) in steered dynamics", default="500.0")
-    parser.add_argument('--method', help="Docking method: harmonic, linear or shell", default="harmonic")
+    parser.add_argument('--method', help="Docking method: harmonic, linear, shell, harmonicWall or linearWall", default="harmonic")
     
     args=vars(parser.parse_args())
 
@@ -80,6 +80,10 @@ def main():
     prt.printPlumedDock(args)
     prt.printTop(args)
     prt.printSetup(args)
+
+    # I can create a workflow here and call the sysBuilding.
+    # But I need to fix the sysBuilding directory structure
+    # and include the sysBuilding inputs here in the dendriDocker.
 
     os.system('chmod u+x {0}'.format(args['runOut']))
     os.system('./{0}'.format(args['runOut']))
