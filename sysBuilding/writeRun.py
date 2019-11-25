@@ -21,15 +21,27 @@ def write_run_box(run_file, init_struct, d, output):
     run_file.write('        -o {output}.gro\n'.format(output=output))
     run_file.write('\n')
 
+
+def write_insert_molecules(run_file, system, insert, nmol, output):
+    run_file.write('### INSERT MOLECULES ###\n')
+    run_file.write('${gmx} insert-molecules \\\n')
+    run_file.write('\t \t -f {system} \\\n'.format(system=system))
+    run_file.write('\t \t -ci {} \\\n'.format(insert=insert))
+    run_file.write('\t \t -nmol {} \\\n'.format(nmol=nmol))
+    run_file.write('\t \t -o box.gro\n')
+    run_file.write('\n')
+
+
 def write_run_solvate(run_file, system, output):
     run_file.write('################### SOLVATE ####################\n')
     run_file.write('\n')
-    run_file.write('$PROGRAM} solvate \n')
-    run_file.write('	-cp ${WORKDIR}/{system}.gro \n'.format(WORKDIR="WORKDIR",system=system))
-    run_file.write('	-cs spc216.gro \n')
-    run_file.write('	-p ${TOPO} \n')
+    run_file.write('$PROGRAM} solvate \\\n')
+    run_file.write('	-cp ${WORKDIR}/{system}.gro \\\n'.format(WORKDIR="WORKDIR",system=system))
+    run_file.write('	-cs spc216.gro \\\n')
+    run_file.write('	-p ${TOPO} \\\n')
     run_file.write('	-o {output}.gro\n'.format(output=output))
     run_file.write('\n')
+
 
 def write_run_ion(run_file, system, output, neutral=True, na=0, cl=0):
     run_file.write('##################### ION ######################\n')
@@ -55,6 +67,7 @@ def write_run_ion(run_file, system, output, neutral=True, na=0, cl=0):
     run_file.write('	-o {output}.gro\n'.format(output=output))
     run_file.write('\n')
 
+
 def write_run_em(run_file, system, output):
     run_file.write('########## MINIMIZATION ###############\n')
     run_file.write('\n')
@@ -70,6 +83,7 @@ def write_run_em(run_file, system, output):
     run_file.write('    -deffnm {output}\n'.format(output=output))
     run_file.write('\n')
     run_file.write('\n')
+
 
 def write_run_nvt(run_file, mdp, system, output, mpi=True, mpithreads=8):
     run_file.write('######### EQUILIBRATION: NVT  ############\n')
@@ -87,6 +101,7 @@ def write_run_nvt(run_file, mdp, system, output, mpi=True, mpithreads=8):
         run_file.write('${PROGRAM} mdrun \n')
     run_file.write('         -deffnm {output}\n'.format(output=output))
     run_file.write('\n')
+
 
 def write_run_npt(run_file, mdp, system, output, mpi=True, mpithreads=8):
     run_file.write('######## EQUILIBRATION: NPT  ##############\n')
@@ -106,7 +121,8 @@ def write_run_npt(run_file, mdp, system, output, mpi=True, mpithreads=8):
     run_file.write('         -deffnm {output}\n'.format(output=output))
     run_file.write('\n')
 
-def write_run_md(run_file, mdp, system, output, mpi=True, mpithreads=8):
+
+def write_run_md(run_file, mdp, system, output, mpi=True, mpithreads=8, plumed=True, plumed_file='plumed.dat'):
     run_file.write('########## MOLECULAR DYNAMICS ###############\n')
     run_file.write('\n')
     run_file.write('${PROGRAM} grompp \n')
@@ -124,7 +140,10 @@ def write_run_md(run_file, mdp, system, output, mpi=True, mpithreads=8):
     # run_file.write('         -cpi state.cpt \n')
     run_file.write('         -cpo {output}.cpt \n'.format(output=output))
     run_file.write('         -deffnm {output}\n'.format(output=output))
+    if plumed=True:
+        run_file.write('         -plumed {plumed_file}\n'.format(plumed_file=plumed_file))
     run_file.write('\n')
+
 
 def write_run(run_file, workdir, program, init_struct, topo, mdp, workflow):
     if os.path.isfile(run_file):
@@ -179,7 +198,6 @@ def write_run(run_file, workdir, program, init_struct, topo, mdp, workflow):
             ion_na=step[2]["na"]
             ion_cl=step[2]["cl"]
 
-
             write_run_ion(run_file, ion_system, ion_output, ion_neutral, ion_na, ion_cl)
         elif step[0] == "SD":
             pass
@@ -214,13 +232,3 @@ def write_run(run_file, workdir, program, init_struct, topo, mdp, workflow):
         
         else:
             error("There is not such run process implemented. Please, check your input or contact the developers.")
-
-
-    # run_file.write('\n')
-    # run_file.write('#mkdir -p ${HERE}/em ${HERE}/nvt ${HERE}/npt ${HERE}/md ${HERE}/out\n')
-    # run_file.write('#\n')
-    # run_file.write('#mv em.* ${HERE}/em\n')
-    # run_file.write('#mv nvt.* ${HERE}/nvt\n')
-    # run_file.write('#mv npt.* ${HERE}/npt\n')
-    # run_file.write('#mv md.* ${HERE}/md\n')
-    # run_file.write('#mv *.* ${HERE}/out\n')

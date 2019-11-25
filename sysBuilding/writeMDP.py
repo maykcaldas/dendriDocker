@@ -104,6 +104,24 @@ def write_mdp_nvt(file_name, nsteps, dt, cont, temp):
         nvt.write('gen_seed	            = -1		; generate a random seed\n')
 
 
+def write_mdp_ion(file_name):
+    file_name.write('; ions.mdp - used as input into grompp to generate ions.tpr')
+    file_name.write('; Parameters describing what to do, when to stop and what to save\n')
+    file_name.write('integrator	= steep		; Algorithm (steep = steepest descent minimization)\n')
+    file_name.write('emtol		= 1000.0  	; Stop minimization when the maximum force < 1000.0 kJ/mol/nm\n')
+    file_name.write('emstep      = 0.01      ; Energy step size\n')
+    file_name.write('nsteps		= 50000	  	; Maximum number of (minimization) steps to perform\n')
+    file_name.write('\n')
+    file_name.write('; Parameters describing how to find the neighbors of each atom and how to calculate the interactions\n')
+    file_name.write('nstlist		    = 1		    ; Frequency to update the neighbor list and long range forces\n')
+    file_name.write('cutoff-scheme   = Verlet\n')
+    file_name.write('ns_type		    = grid		; Method to determine neighbor list (simple, grid)\n')
+    file_name.write('coulombtype	    = PME		; Treatment of long range electrostatic interactions\n')
+    file_name.write('rcoulomb	    = 1.0		; Short-range electrostatic cut-off\n')
+    file_name.write('rvdw		    = 1.0		; Short-range Van der Waals cut-off\n')
+    file_name.write('pbc		        = xyz 		; Periodic Boundary Conditions (yes/no)\n')
+
+
 def write_mdp_npt(file_name, nsteps, dt, cont, temp, press):
     if os.path.isfile(file_name):
         print('!!!Backing up the existing npt file!!!')
