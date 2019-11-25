@@ -12,8 +12,7 @@ from printer import printer
 import argparse
 import time
 import os
-import sysBuilding # Future plans to automatize the whole process.
-
+import sysBuilding # Future plans to automatize the whole 
 
 def main():
     startTime=time.time()
@@ -76,14 +75,16 @@ def main():
     
     print("\n")    
 
+    workflow=create_workflow()
+
+    sysBuilding.writeMDP.write_mdp(workflow)
+    sysBuilding.writeRun.write_run(run_file=args['runOut'], workdir=".", program=args["gmxPath"], init_struct=args["dendCoord"], topo=args["topolOut"], mdp=args["mdpPath"], workflow=workflow)
+    sysBuilding.writeRun.write_submission(file_name="runjob", job_name="TEST1", job_file="./runmd.sh")
+
     prt=printer()
     prt.printPlumedDock(args)
     prt.printTop(args)
-    prt.printSetup(args)
-
-    # I can create a workflow here and call the sysBuilding.
-    # But I need to fix the sysBuilding directory structure
-    # and include the sysBuilding inputs here in the dendriDocker.
+    # prt.printSetup(args)
 
     os.system('chmod u+x {0}'.format(args['runOut']))
     os.system('./{0}'.format(args['runOut']))
@@ -91,6 +92,47 @@ def main():
     
     print("The run took: {0:.2g} seconds.\n".format(time.time()-startTime))
 
+def create_workflow():
+
+    workflow = [('BOX', 
+        {'file_name': None},
+        {'run_file': 'runmd.sh', 'init_struct': args['dendCoord'], 'd': '1.0', 'output': 'box1'}
+    ),
+    ("INSERT",
+        {'file_name': None},
+        {"run_file": 'runmd.sh', "system": "box1.gro", "insert": args['ligandCoord'], "nmol": args["nligand"], "output": "box2"}
+    ),
+    ('BOX', 
+        {'file_name': None},
+        {'run_file': 'runmd.sh', 'init_struct': "box2.gro", 'd': '0.2', 'output': 'box3'}
+    ),
+    ('EM', 
+        {'file_name': 'em.mdp', 'emtol': '100.0', 'nsteps': '5000', 'emstep': '0.001'}, 
+        {'run_file': 'runmd.sh', 'system': 'box3.gro', 'output': 'em1'}
+    ),
+    ('BOX', 
+        {'file_name': None},
+        {'run_file': 'runmd.sh', 'init_struct': "em1.gro", 'd': '0.2', 'output': 'box4'}
+    ),
+    ("SOLV", 
+        {'file_name': None},
+        {'run_file':'runmd.sh', 'system': 'box4.gro', 'output': 'solv'}
+    ),
+    ('ION', 
+        {'file_name': 'ion.mdp'},
+        {'run_file': 'runmd.sh', 'system': 'solv.gro', 'output': 'ion', 'neutral':True, 'na':'0', 'cl':'0'}
+    ),
+    ('EM', 
+        {'file_name': 'em.mdp', 'emtol': '100.0', 'nsteps': '5000', 'emstep': '0.001'}, 
+        {'run_file': 'runmd.sh', 'system': 'ion.gro', 'output': 'em2'}
+    ),
+    ('MD', 
+        {'file_name': 'md.mdp', 'nsteps': '1000', 'dt': '0.002', 'cont':'yes', 'temp':'298', 'press': '1'}, 
+        {'run_file': 'runmd.sh', 'mdp': '.', 'system': 'em2.gro', 'output': 'md', 'mpi': False, 'mpithreads': '8', "plumed": True, "plumed_file": args["dockOut"]}
+    )
+    ]
+
+    return workflow
 
 def error(message):
     print("An error occurred.")

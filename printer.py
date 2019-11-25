@@ -15,6 +15,7 @@ class printer():
         '''
         pass
 
+
     def printPlumedDock(self,args):
         if os.path.isfile(args['dockOut']):
             print('!!!Backing up the existing docking file!!!')
@@ -102,6 +103,7 @@ class printer():
             os.rename('plumed.dat', 'bck.plumed.dat')
         f=open('plumed.dat','w')
 
+
     def printTop(self,args):
         if os.path.isfile(args['topolOut']):
             print('!!!Backing up the existing topology file!!!')
@@ -150,9 +152,10 @@ class printer():
 
         print('Finallyzing the topology file.\n')
 
+
     def printSetup(self,args):
         if os.path.isfile(args['runOut']):
-            print('!!!Backing up the existing topology file!!!')
+            print('!!!Backing up the existing run file!!!')
             os.rename(args['runOut'], 'bck.'+args['runOut'])
         f=open(args['runOut'],'w')
         
