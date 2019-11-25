@@ -14,34 +14,6 @@ import argparse
 import time
 import workflow
 
-def write_submission(file_name, job_name, job_file):
-    if os.path.isfile(file_name):
-        print('!!!Backing up the existing job file!!!')
-        os.rename(file_name, 'bck.'+file_name)
-    job=open(file_name,'w')
- 
-    job.write('#!/bin/bash\n')
-    job.write('#PBS -l select=1:ncpus=48:mpiprocs=8\n')
-    job.write('#PBS -l walltime=999:00:00\n')
-    job.write('#PBS -j oe\n')
-    job.write('#PBS -M maykcaldas@gmail.com\n')
-    job.write('#PBS -m bea\n')
-    job.write('#PBS -V\n')
-    job.write('#PBS -N {job_name}\n'.format(job_name=job_name))
-    job.write('\n')
-    job.write('# load modules\n')
-    job.write('module load openmpi-gnu/2.1.1\n')
-    job.write('source /scratch/60061a/plumed2/sourceme.sh\n')
-    job.write('# change directory\n')
-    job.write('cd $\{PBS_O_WORKDIR\}\n')
-    job.write('# environment (if necessary)\n')
-    job.write('export PLUMED_NUM_THREADS=1\n')
-    job.write('export OMP_NUM_THREADS=6\n')
-    job.write('\n')
-    job.write('# run\n')
-    job.write('{job_file}'.format(job_file=job_file))
-
-
 def write_log(log_file, workFlow):
 
     print("The workFlow is:")

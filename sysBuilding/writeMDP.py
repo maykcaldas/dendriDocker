@@ -1,14 +1,14 @@
 #!/usr/bin/python3
 #!-*- coding: utf8 -*-
 
-import os
-
 '''
 Software general documentation
 
 gromacsBuilding was made using python 3.5.2
 
 '''
+
+import os
 
 def write_mdp_em(file_name, emtol, nsteps, emstep):
     if os.path.isfile(file_name):
@@ -131,7 +131,7 @@ def write_mdp_npt(file_name, nsteps, dt, cont, temp, press):
     npt.write('title		            = PAMAM NPT equilibration \n')
     npt.write('; Run parameters\n')
     npt.write('integrator	            = md		; leap-frog integrator\n')
-    npt.write('nsteps		            = {nsteps}	; {time} fs * {nsteps} = {run} ns\n'.format(nsteps=nsteps, time=float(dt)(nsteps=nsteps))
+    npt.write('nsteps		            = {nsteps}	; {time} fs * {nsteps} = {run} ns\n'.format(nsteps=nsteps, time=float(dt)*1000, run=float(dt)*float(nsteps)/1000))
     npt.write('dt		                = {dt}		; {time} fs\n'.format(dt=dt, time=float(dt)*1000))
     npt.write('; Output control\n')
     npt.write('nstxout		            = 500		; save coordinates every 1.0 ps\n')
@@ -197,7 +197,7 @@ def write_mdp_md(file_name, nsteps, dt, temp, press):
     md.write('title		= PAMAM Dendrimer G0 in Basic environment simulation\n') 
     md.write('; Run parameters\n')
     md.write('integrator	            = md		; leap-frog integrator\n')
-    md.write('nsteps		            = {nsteps}	; {time} fs * {nsteps} = {run} ns\n'.format(nsteps=nsteps, time=float(nsteps=nsteps))
+    md.write('nsteps		            = {nsteps}	; {time} fs * {nsteps} = {run} ns\n'.format(nsteps=nsteps, time=float(dt)*1000, run=float(dt)*float(nsteps)/1000))
     md.write('dt		                = {dt}		; {time} fs\n'.format(dt=dt, time=float(dt)*1000))
     md.write('; Output control\n')
     md.write('nstxout		            = 5000		; save coordinates every 10.0 ps\n')
@@ -254,6 +254,8 @@ def write_mdp(workflow):
     for step in workflow:
         if step[0] == "BOX":
             pass
+        elif step[0] == "SOLV":
+            pass
         elif step[0] == "EM":
             em_file_name=step[1]["file_name"]
             em_emtol=step[1]["emtol"]
@@ -262,6 +264,8 @@ def write_mdp(workflow):
             
             write_mdp_em(em_file_name, em_emtol, em_nsteps, em_emstep)
         elif step[0] == "ION":
+            pass
+        elif step[0] == "INSERT":
             pass
         elif step[0] == "SD":
             write_mdp_sd()
