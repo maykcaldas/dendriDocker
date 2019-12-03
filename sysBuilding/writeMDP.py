@@ -105,21 +105,26 @@ def write_mdp_nvt(file_name, nsteps, dt, cont, temp):
 
 
 def write_mdp_ion(file_name):
-    file_name.write('; ions.mdp - used as input into grompp to generate ions.tpr')
-    file_name.write('; Parameters describing what to do, when to stop and what to save\n')
-    file_name.write('integrator	= steep		; Algorithm (steep = steepest descent minimization)\n')
-    file_name.write('emtol		= 1000.0  	; Stop minimization when the maximum force < 1000.0 kJ/mol/nm\n')
-    file_name.write('emstep      = 0.01      ; Energy step size\n')
-    file_name.write('nsteps		= 50000	  	; Maximum number of (minimization) steps to perform\n')
-    file_name.write('\n')
-    file_name.write('; Parameters describing how to find the neighbors of each atom and how to calculate the interactions\n')
-    file_name.write('nstlist		    = 1		    ; Frequency to update the neighbor list and long range forces\n')
-    file_name.write('cutoff-scheme   = Verlet\n')
-    file_name.write('ns_type		    = grid		; Method to determine neighbor list (simple, grid)\n')
-    file_name.write('coulombtype	    = PME		; Treatment of long range electrostatic interactions\n')
-    file_name.write('rcoulomb	    = 1.0		; Short-range electrostatic cut-off\n')
-    file_name.write('rvdw		    = 1.0		; Short-range Van der Waals cut-off\n')
-    file_name.write('pbc		        = xyz 		; Periodic Boundary Conditions (yes/no)\n')
+    if os.path.isfile(file_name):
+        print('!!!Backing up the existing ion file!!!')
+        os.rename(file_name, 'bck.'+file_name)
+    ion=open(file_name,'w')
+
+    ion.write('; ions.mdp - used as input into grompp to generate ions.tpr')
+    ion.write('; Parameters describing what to do, when to stop and what to save\n')
+    ion.write('integrator	= steep		; Algorithm (steep = steepest descent minimization)\n')
+    ion.write('emtol		= 1000.0  	; Stop minimization when the maximum force < 1000.0 kJ/mol/nm\n')
+    ion.write('emstep      = 0.01      ; Energy step size\n')
+    ion.write('nsteps		= 50000	  	; Maximum number of (minimization) steps to perform\n')
+    ion.write('\n')
+    ion.write('; Parameters describing how to find the neighbors of each atom and how to calculate the interactions\n')
+    ion.write('nstlist		    = 1		    ; Frequency to update the neighbor list and long range forces\n')
+    ion.write('cutoff-scheme   = Verlet\n')
+    ion.write('ns_type		    = grid		; Method to determine neighbor list (simple, grid)\n')
+    ion.write('coulombtype	    = PME		; Treatment of long range electrostatic interactions\n')
+    ion.write('rcoulomb	    = 1.0		; Short-range electrostatic cut-off\n')
+    ion.write('rvdw		    = 1.0		; Short-range Van der Waals cut-off\n')
+    ion.write('pbc		        = xyz 		; Periodic Boundary Conditions (yes/no)\n')
 
 
 def write_mdp_npt(file_name, nsteps, dt, cont, temp, press):
@@ -264,7 +269,9 @@ def write_mdp(workflow):
             
             write_mdp_em(em_file_name, em_emtol, em_nsteps, em_emstep)
         elif step[0] == "ION":
-            pass
+            ion_file_name=step[1]["file_name"]
+
+            write_mdp_ion(ion_file_name)
         elif step[0] == "INSERT":
             pass
         elif step[0] == "SD":
@@ -297,4 +304,9 @@ def write_mdp(workflow):
             write_mdp_md(md_file_name, md_nsteps, md_dt, md_temp, md_press)
         else:
             error("There is not such mdp process implemented. Please, check your input or contact the developers.")
-        
+
+def error(message):
+    print("An error occurred.")
+    print(message)
+    print("See './__main__.py -h' for more instructions.")
+    exit()

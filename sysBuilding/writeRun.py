@@ -237,6 +237,7 @@ def write_run(run_file, workdir, program, init_struct, topo, mdp, workflow):
             insert_insert=step[2]["insert"]
             insert_nmol=step[2]["nmol"]
             insert_output=step[2]["output"]
+
             write_run_insert_molecules(run_file, insert_system, insert_insert, insert_nmol, insert_output)
         elif step[0] == "SD":
             pass
@@ -258,7 +259,6 @@ def write_run(run_file, workdir, program, init_struct, topo, mdp, workflow):
             npt_mpiThreads=step[2]["mpithreads"]
             
             write_run_npt(run_file, npt_mdp, npt_system, npt_output, npt_mpi, npt_mpiThreads)
-        
         elif step[0] == "MD":
             md_run_file=step[2]["run_file"]
             md_mdp=step[2]["mdp"]
@@ -270,6 +270,11 @@ def write_run(run_file, workdir, program, init_struct, topo, mdp, workflow):
             md_plumed_file=step[2]["plumed_file"]
             
             write_run_md(run_file, md_mdp, md_system, md_output, md_mpi, md_mpiThreads, md_plumed, md_plumed_file)
-        
         else:
             error("There is not such run process implemented. Please, check your input or contact the developers.")
+
+def error(message):
+    print("An error occurred.")
+    print(message)
+    print("See './__main__.py -h' for more instructions.")
+    exit()
