@@ -66,7 +66,7 @@ class printer():
         
         elif args['method'] == "harmonicWall":
             for i in range(int(args['nligand'])):
-                f.write('rest_{0}: UPPER_WALLS ARG=d_{0} AT=0.0 KAPPA={1} EXP=2 EPS=2\n'.format(i+1, args['force']))
+                f.write('rest_{0}: UPPER_WALLS ARG=d_{0} AT=1.1 KAPPA={1} EXP=2 EPS=2\n'.format(i+1, args['force']))
         
         elif args['method'] == "linearWall":
             for i in range(int(args['nligand'])):

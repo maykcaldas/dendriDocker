@@ -75,7 +75,7 @@ def main():
     
     print("\n")    
 
-    workflow=create_workflow()
+    workflow=create_workflow(args)
 
     sysBuilding.writeMDP.write_mdp(workflow)
     sysBuilding.writeRun.write_run(run_file=args['runOut'], workdir=".", program=args["gmxPath"], init_struct=args["dendCoord"], topo=args["topolOut"], mdp=args["mdpPath"], workflow=workflow)
@@ -92,7 +92,7 @@ def main():
     
     print("The run took: {0:.2g} seconds.\n".format(time.time()-startTime))
 
-def create_workflow():
+def create_workflow(args):
 
     workflow = [('BOX', 
         {'file_name': None},
@@ -127,9 +127,9 @@ def create_workflow():
         {'run_file': 'runmd.sh', 'system': 'ion.gro', 'output': 'em2'}
     ),
     ('MD', 
-        {'file_name': 'md.mdp', 'nsteps': '1000', 'dt': '0.002', 'cont':'yes', 'temp':'298', 'press': '1'}, 
+        {'file_name': 'md.mdp', 'nsteps': '2500', 'dt': '0.002', 'cont':'yes', 'temp':'298', 'press': '1'}, 
         {'run_file': 'runmd.sh', 'mdp': '.', 'system': 'em2.gro', 'output': 'md', 'mpi': False, 'mpithreads': '8', "plumed": True, "plumed_file": args["dockOut"]}
-    )
+    ),
     ]
 
     return workflow
