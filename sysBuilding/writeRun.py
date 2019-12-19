@@ -154,7 +154,7 @@ def write_run_md(run_file, mdp, system, output, mpi=True, mpithreads=8, plumed=T
     run_file.write('########## MOLECULAR DYNAMICS ###############\n')
     run_file.write('\n')
     run_file.write('${PROGRAM} grompp \\\n')
-    run_file.write('         -f ${MDP}/md.mdp \\\n'.format(MDP="MDP",mdp=mdp))
+    run_file.write('         -f ${MDP}/dock.mdp \\\n'.format(MDP="MDP"))
     run_file.write('         -c ${WORKDIR}/{system} \\\n'.format(WORKDIR="WORKDIR",system=system))
     run_file.write('         -p ${TOPO} \\\n')
     run_file.write('         -maxwarn 2 \\\n')
@@ -272,6 +272,7 @@ def write_run(run_file, workdir, program, init_struct, topo, mdp, workflow):
             write_run_md(run_file, md_mdp, md_system, md_output, md_mpi, md_mpiThreads, md_plumed, md_plumed_file)
         else:
             error("There is not such run process implemented. Please, check your input or contact the developers.")
+
 
 def error(message):
     print("An error occurred.")

@@ -236,7 +236,7 @@ def write_mdp_md(file_name, nsteps, dt, temp, press):
     md.write('pme_order                 = 4			; cubic interpolation\n')
     md.write('ewald_rtol                = 1e-5\n')
     md.write('; Temperature coupling is on\n')
-    md.write('tcoupl	                = V-rescale	            ; modified Berendsen thermostat\n')
+    md.write('tcoupl	                = berendsen	            ; Berendsen thermostat\n') # = V-rescale ; modified Berendsen thermostat\n')
     md.write('tc-grps	                = non-Water Water		; two coupling groups - more accurate\n')
     md.write('tau_t		                = 0.1		0.1	        ; time constant, in ps\n')
     md.write('ref_t		                = {temp}	{temp}      ; reference temperature, one for each group, in K\n'.format(temp=temp))
@@ -255,8 +255,8 @@ def write_mdp_md(file_name, nsteps, dt, temp, press):
     md.write('gen_seed	                = -1		; generate a random seed\n')
 
 
-def write_mdp(workflow):
-    for step in workflow:
+def write_mdp(workFlow):
+    for step in workFlow:
         if step[0] == "BOX":
             pass
         elif step[0] == "SOLV":
@@ -304,6 +304,7 @@ def write_mdp(workflow):
             write_mdp_md(md_file_name, md_nsteps, md_dt, md_temp, md_press)
         else:
             error("There is not such mdp process implemented. Please, check your input or contact the developers.")
+
 
 def error(message):
     print("An error occurred.")
