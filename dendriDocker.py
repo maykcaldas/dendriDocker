@@ -48,6 +48,7 @@ def main():
     parser.add_argument('--runOut', help="Output name of the run file", default='run.sh')
     parser.add_argument('--force', help="Force constant of the harmonic potential (or the slope in linear potential) in steered dynamics", default="500.0")
     parser.add_argument('--method', help="Docking method: harmonic, linear, shell, harmonicWall or linearWall", default="harmonic")
+    parser.add_argument('--workflow', help="Path to the workflow file", default="workflow.dat")
     
     args=vars(parser.parse_args())
 
@@ -75,7 +76,10 @@ def main():
     
     print("\n")    
 
-    workflow=create_workflow(args)
+    # create workflow based on an external file
+    workflow=sysBuilding.gromacsBuilding.read_input(args['workflow'])   
+    # create workflow using dendridocker parameters
+    # create_workflow(args) 
 
     sysBuilding.writeMDP.write_mdp(workflow)
     sysBuilding.writeRun.write_run(run_file=args['runOut'], workdir=".", program=args["gmxPath"], init_struct=args["dendCoord"], topo=args["topolOut"], mdp=args["mdpPath"], workflow=workflow)
@@ -94,7 +98,8 @@ def main():
 
 def create_workflow(args):
 
-    workflow = [('BOX', 
+    workflow = [
+    ('BOX', 
         {'file_name': None},
         {'run_file': 'runmd.sh', 'init_struct': args['dendCoord'], 'd': '1.0', 'output': 'box1'}
     ),
@@ -127,8 +132,8 @@ def create_workflow(args):
         {'run_file': 'runmd.sh', 'system': 'ion.gro', 'output': 'em2'}
     ),
     ('MD', 
-        {'file_name': 'md.mdp', 'nsteps': '2500', 'dt': '0.002', 'cont':'yes', 'temp':'298', 'press': '1'}, 
-        {'run_file': 'runmd.sh', 'mdp': '.', 'system': 'em2.gro', 'output': 'md', 'mpi': False, 'mpithreads': '8', "plumed": True, "plumed_file": args["dockOut"]}
+        {'file_name': 'dock.mdp', 'nsteps': '5000', 'dt': '0.002', 'cont':'yes', 'temp':'298', 'press': '1'}, 
+        {'run_file': 'runmd.sh', 'mdp': '.', 'system': 'em2.gro', 'output': 'dock', 'mpi': False, 'mpithreads': '8', "plumed": True, "plumed_file": args["dockOut"]}
     ),
     ]
 
