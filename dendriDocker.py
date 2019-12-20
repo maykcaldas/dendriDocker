@@ -8,13 +8,14 @@ DendriBuilder was made using python 3.5.2
 
 '''
 
-from printer import printer
-import argparse
-import time
-import os
-import sysBuilding # Future plans to automatize the whole 
-
 def main():
+
+    from printer import printer
+    import argparse
+    import time
+    import os
+    import sysBuilding
+
     startTime=time.time()
     script_dir = os.path.dirname(__file__)
     logo=open(script_dir+'/asciilogo.txt','r')
@@ -48,8 +49,7 @@ def main():
     parser.add_argument('--runOut', help="Output name of the run file", default='run.sh')
     parser.add_argument('--force', help="Force constant of the harmonic potential (or the slope in linear potential) in steered dynamics", default="500.0")
     parser.add_argument('--method', help="Docking method: harmonic, linear, shell, harmonicWall or linearWall", default="harmonic")
-    parser.add_argument('--workflow', help="Path to the workflow file", default="workflow.dat")
-    
+    parser.add_argument('--workflow', help="Path to the workflow file", default="workflow.inp")
     args=vars(parser.parse_args())
 
     #Getting the atomInDend
@@ -70,10 +70,9 @@ def main():
     if not args['method'] in ['harmonic','linear','shell', 'harmonicWall', 'linearWall']:
         error("This is not a valid method.")
 
-    print("The used list of parameters are:\n")
+    print("The used list of parameters to dendriDocker are:\n")
     for i in args:
         print("{0:15s}: {1}".format(i, args[i]))
-    
     print("\n")    
 
     # create workflow based on an external file
@@ -88,13 +87,14 @@ def main():
     prt=printer()
     prt.printPlumedDock(args)
     prt.printTop(args)
-    # prt.printSetup(args)
+    # prt.printSetup(args) 
 
     os.system('chmod u+x {0}'.format(args['runOut']))
     os.system('./{0}'.format(args['runOut']))
     os.system('rm -rf \#*')
     
     print("The run took: {0:.2g} seconds.\n".format(time.time()-startTime))
+
 
 def create_workflow(args):
 
@@ -138,6 +138,7 @@ def create_workflow(args):
     ]
 
     return workflow
+
 
 def error(message):
     print("An error occurred.")
