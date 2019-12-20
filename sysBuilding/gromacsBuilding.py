@@ -8,11 +8,9 @@ gromacsBuilding was made using python 3.5.2
 
 '''
 
-from writeMDP import *
-from writeRun import *
-import argparse
 import time
 import sys
+import os
 
 def write_log(log_file, workFlow):
 
@@ -40,7 +38,7 @@ def read_input(file_name):
     try:
         file=open(file_name,"r")
     except IOError:
-        error("There is a problema reading the {file_name} file".format(file_name=file_name))
+        error("There is a problem reading the {file_name} file".format(file_name=file_name))
         exit()
 
     workflow=[]
@@ -94,25 +92,55 @@ def read_input(file_name):
 
 def main():
     
-    workFlow=read_input(sys.argv[1])
+    from writeMDP import write_mdp
+    from writeRun import write_run
+    from writeRun import write_submission
+    import argparse
 
-    # workFlow=create_workFlow()
+    parser=argparse.ArgumentParser(description="There is no description")
+    parser.add_argument('--run_file', help="", default='runmd.sh')
+    parser.add_argument('--workdir', help="", default='.')
+    parser.add_argument('--program', help="", default=None)
+    parser.add_argument('--init_structure', help="", default=None)
+    parser.add_argument('--topo', help="", default='topol.top')
+    parser.add_argument('--mdp', help="", default='.')
+    parser.add_argument('--workflow', help="", default='workflow.inp')
+    parser.add_argument('--sub_file', help="", default='runjob')
+    parser.add_argument('--job_name', help="", default='')
+    parser.add_argument('--job_file', help="", default='runmd.sh')
+    args=vars(parser.parse_args())
+
+    noneInArgs=False
+    for k in args:
+        if args[k] is None:
+            print("The {0:^15s} should be defined.".format(k))
+            noneInArgs=True
+    if noneInArgs == True:
+        error("There were some undefined variables.")
+
+    print("The used list of parameters to gromacsBuilding are:\n")
+    for i in args:
+        print("{0:15s}: {1}".format(i, args[i]))
+    print("\n")  
+
+
+    workFlow=read_input(args['workflow'])
     
     write_log("log.file", workFlow)
-
     write_mdp(workFlow)
-    write_run(run_file='runmd.sh', workdir='path/to/work/dir', program='path/to/gromacs', init_struct='initial_structure', topo='topology', mdp='path/to/mdp/directory', workflow=workFlow)
-    write_submission(file_name="runjob", job_name="TEST1", job_file="runmd.sh")
+    write_run(run_file=args['run_file'], workdir=args['workdir'], program=args['program'], init_struct=args['init_structure'], topo=args['topo'], mdp=args['mdp'], workflow=workFlow)
+    write_submission(file_name=args['sub_file'], job_name=args['job_name'], job_file=args['job_file'])
+
 
 def create_workFlow():
     workflow = [('BOX', 
         {'file_name': None},
         {'run_file': 'test/runmd.sh', 'init_struct': 'PAMAM_G0_Neutral.gro', 'd': '1.0', 'output': 'box'}
     ),
-    # (SOLVATE, 
-    #     {'file_name': None},
-    #     {'run_file':'runmd.sh', 'system': 'box.gro', 'output': 'solv'}
-    # ),
+    (SOLVATE, 
+        {'file_name': None},
+        {'run_file':'runmd.sh', 'system': 'box.gro', 'output': 'solv'}
+    ),
     ('ION', 
         {'file_name': 'None'},
         {'run_file': 'runmd.sh', 'system': 'box', 'output': 'ion', 'neutral':True, 'na':'0', 'cl':'0'}
@@ -136,6 +164,7 @@ def create_workFlow():
     ]
 
     return workflow
+
 
 def error(message):
     print("An error occurred.")

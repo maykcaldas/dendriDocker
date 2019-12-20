@@ -160,7 +160,7 @@ def write_run_md(run_file, mdp, system, output, mpi=True, mpithreads=8, plumed=T
     run_file.write('         -maxwarn 2 \\\n')
     run_file.write('         -o {output}.tpr\\\n'.format(output=output))
     run_file.write('\n')
-    if mpi==True:
+    if mpi=='True':
         run_file.write('mpirun -n {mpithreads} ${PROGRAM} mdrun \\\n'.format(mpithreads=mpithreads, PROGRAM="PROGRAM"))
     else:
         run_file.write('${PROGRAM} mdrun \\\n')
@@ -168,7 +168,7 @@ def write_run_md(run_file, mdp, system, output, mpi=True, mpithreads=8, plumed=T
     # run_file.write('         -cpi state.cpt \\\n')
     run_file.write('         -cpo {output}.cpt \\\n'.format(output=output))
     run_file.write('         -deffnm {output}\\\n'.format(output=output))
-    if plumed==True:
+    if plumed=='True':
         run_file.write('         -plumed {plumed_file}\\\n'.format(plumed_file=plumed_file))
     run_file.write('\n')
 
