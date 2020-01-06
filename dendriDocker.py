@@ -101,39 +101,39 @@ def create_workflow(args):
     workflow = [
     ('BOX', 
         {'file_name': None},
-        {'run_file': 'runmd.sh', 'init_struct': args['dendCoord'], 'd': '1.0', 'output': 'box1'}
+        {'mdp_file': 'None', 'init_struct': args['dendCoord'], 'd': '1.0', 'output': 'box1'}
     ),
     ("INSERT",
         {'file_name': None},
-        {"run_file": 'runmd.sh', "system": "box1.gro", "insert": args['ligandCoord'], "nmol": args["nligand"], "output": "box2"}
+        {"mdp_file": 'None', "system": "box1.gro", "insert": args['ligandCoord'], "nmol": args["nligand"], "output": "box2"}
     ),
     ('BOX', 
         {'file_name': None},
-        {'run_file': 'runmd.sh', 'init_struct': "box2.gro", 'd': '0.2', 'output': 'box3'}
+        {'mdp_file': 'None', 'init_struct': "box2.gro", 'd': '0.2', 'output': 'box3'}
     ),
     ('EM', 
         {'file_name': 'em.mdp', 'emtol': '100.0', 'nsteps': '5000', 'emstep': '0.001'}, 
-        {'run_file': 'runmd.sh', 'system': 'box3.gro', 'output': 'em1'}
+        {'mdp_file': 'em.mdp', 'system': 'box3.gro', 'output': 'em1'}
     ),
     ('BOX', 
         {'file_name': None},
-        {'run_file': 'runmd.sh', 'init_struct': "em1.gro", 'd': '0.2', 'output': 'box4'}
+        {'mdp_file': 'None', 'init_struct': "em1.gro", 'd': '0.2', 'output': 'box4'}
     ),
     ("SOLV", 
         {'file_name': None},
-        {'run_file':'runmd.sh', 'system': 'box4.gro', 'output': 'solv'}
+        {'mdp_file':'None', 'system': 'box4.gro', 'output': 'solv'}
     ),
     ('ION', 
         {'file_name': 'ion.mdp'},
-        {'run_file': 'runmd.sh', 'system': 'solv.gro', 'output': 'ion', 'neutral':True, 'na':'0', 'cl':'0'}
+        {'mdp_file': 'ion.mdp', 'system': 'solv.gro', 'output': 'ion', 'neutral':True, 'na':'0', 'cl':'0'}
     ),
     ('EM', 
         {'file_name': 'em.mdp', 'emtol': '100.0', 'nsteps': '5000', 'emstep': '0.001'}, 
-        {'run_file': 'runmd.sh', 'system': 'ion.gro', 'output': 'em2'}
+        {'mdp_file': 'em.mdp', 'system': 'ion.gro', 'output': 'em2'}
     ),
     ('MD', 
         {'file_name': 'dock.mdp', 'nsteps': '5000', 'dt': '0.002', 'cont':'yes', 'temp':'298', 'press': '1'}, 
-        {'run_file': 'runmd.sh', 'mdp': '.', 'system': 'em2.gro', 'output': 'dock', 'mpi': False, 'mpithreads': '8', "plumed": True, "plumed_file": args["dockOut"]}
+        {'mdp_file': 'dock.mdp', 'mdp': '.', 'system': 'em2.gro', 'output': 'dock', 'mpi': False, 'mpithreads': '8', "plumed": True, "plumed_file": args["dockOut"]}
     ),
     ]
 
