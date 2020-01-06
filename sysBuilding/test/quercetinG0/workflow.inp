@@ -2,13 +2,13 @@ BOX
 mdp_input
     file_name: None
 run_input
-    run_file: runmd.sh, init_struct: args[dendCoord], d: 1.0, output: box1
+    run_file: runmd.sh, init_struct: PAMAM_G0_Neutral.gro, d: 1.0, output: box1
 
 INSERT
 mdp_input
     file_name: None
 run_input
-    run_file: runmd.sh, system: box1.gro, insert: args[ligandCoord], nmol: [nligand], output: box2
+    run_file: runmd.sh, system: box1.gro, insert: quercetin.pdb, nmol: 8, output: box2
 
 BOX
 mdp_input
@@ -51,4 +51,4 @@ MD
 mdp_input
     file_name: dock.mdp, nsteps: 5000, dt: 0.002, cont:yes, temp:298, press: 1
 run_input
-    run_file: runmd.sh, mdp: ., system: em2.gro, output: dock, mpi: False, mpithreads: 8, plumed: True, plumed_file: args[dockOut]
+    run_file: runmd.sh, mdp: ., system: em2.gro, output: dock, mpi: True, mpithreads: 8, plumed: True, plumed_file: plumed.dat

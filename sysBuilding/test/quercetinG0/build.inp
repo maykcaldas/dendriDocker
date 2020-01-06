@@ -1,0 +1,10 @@
+--run_file runmd.sh
+--workdir .
+--program /home/mayk/programs/gromacs-5.1.4/install/bin/gmx
+--init_structure dock.gro
+--topo topol.top
+--mdp .
+--sub_file runjob
+--job_name QuercetinG0
+--job_file runmd.sh
+--workflow workflow.inp

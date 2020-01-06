@@ -51,7 +51,7 @@ def write_run_box(run_file, init_struct, d, output):
 
 
 def write_run_insert_molecules(run_file, system, insert, nmol, output):
-    run_file.write('### INSERT MOLECULES ###\n')
+    run_file.write('########## INSERT MOLECULES ##############\n')
     run_file.write('${PROGRAM} insert-molecules \\\n')
     run_file.write('\t \t -f ${WORKDIR}/{system} \\\n'.format(WORKDIR="WORKDIR", system=system))
     run_file.write('\t \t -ci {insert} \\\n'.format(insert=insert))

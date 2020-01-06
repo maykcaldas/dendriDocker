@@ -103,7 +103,7 @@ def main():
     parser.add_argument('--program', help="", default=None)
     parser.add_argument('--init_structure', help="", default=None)
     parser.add_argument('--topo', help="", default='topol.top')
-    parser.add_argument('--mdp', help="", default='.')
+    parser.add_argument('--mdpPath', help="", default='.')
     parser.add_argument('--workflow', help="", default='workflow.inp')
     parser.add_argument('--sub_file', help="", default='runjob')
     parser.add_argument('--job_name', help="", default='')
@@ -128,7 +128,7 @@ def main():
     
     write_log("log.file", workFlow)
     write_mdp(workFlow)
-    write_run(run_file=args['run_file'], workdir=args['workdir'], program=args['program'], init_struct=args['init_structure'], topo=args['topo'], mdp=args['mdp'], workflow=workFlow)
+    write_run(run_file=args['run_file'], workdir=args['workdir'], program=args['program'], init_struct=args['init_structure'], topo=args['topo'], mdpPath=args['mdpPath'], workflow=workFlow)
     write_submission(file_name=args['sub_file'], job_name=args['job_name'], job_file=args['job_file'])
 
 

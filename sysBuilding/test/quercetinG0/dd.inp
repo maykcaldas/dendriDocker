@@ -1,0 +1,15 @@
+--host PAMAM      
+--ligand VV98
+--nligand 8  
+--atomInDend  52 
+--atomInLigand 32
+--ligandCoord quercetin.pdb 
+--dendCoord PAMAM_G0_Neutral.gro
+--ligandTop quercetin.itp
+--dendTop PAMAM_G0_Neutral.itp
+--FFPath /home/mayk/Documents/Labmmol/Dendrimer/dendriDOCK/validation/gromos2016h66.ff
+--gmxPath ~/programs/gromacs-5.1.4/install/bin/gmx
+--mdpPath .
+--force 500.0
+--method linearWall
+--workflow workflow.inp

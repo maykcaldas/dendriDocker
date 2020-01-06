@@ -255,7 +255,10 @@ def write_mdp_md(file_name, nsteps, dt, temp, press):
     md.write('gen_seed	                = -1		; generate a random seed\n')
 
 
-def write_mdp(workFlow):
+def write_mdp(workFlow): #, mdpPath):
+
+    #check if there is a available mdpPath
+
     for step in workFlow:
         if step[0] == "BOX":
             pass
