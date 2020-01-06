@@ -1,0 +1,45 @@
+BOX	 mdp input
+	 {'file_name': 'None'}
+	 run input
+	 {'run_file': 'runmd.sh', 'd': '1.0', 'init_struct': 'PAMAM_G0_Neutral.gro', 'output': 'box1'}
+
+INSERT	 mdp input
+	 {'file_name': 'None'}
+	 run input
+	 {'run_file': 'runmd.sh', 'system': 'box1.gro', 'nmol': '8', 'insert': 'quercetin.pdb', 'output': 'box2'}
+
+BOX	 mdp input
+	 {'file_name': 'None'}
+	 run input
+	 {'run_file': 'runmd.sh', 'd': '0.2', 'init_struct': 'box2.gro', 'output': 'box3'}
+
+EM	 mdp input
+	 {'emtol': '100.0', 'emstep': '0.001', 'file_name': 'em.mdp', 'nsteps': '5000'}
+	 run input
+	 {'run_file': 'runmd.sh', 'system': 'box3.gro', 'output': 'em1'}
+
+BOX	 mdp input
+	 {'file_name': 'None'}
+	 run input
+	 {'run_file': 'runmd.sh', 'd': '0.2', 'init_struct': 'em1.gro', 'output': 'box4'}
+
+SOLV	 mdp input
+	 {'file_name': 'None'}
+	 run input
+	 {'run_file': 'runmd.sh', 'system': 'box4.gro', 'output': 'solv'}
+
+ION	 mdp input
+	 {'file_name': 'ion.mdp'}
+	 run input
+	 {'run_file': 'runmd.sh', 'cl': '0', 'output': 'ion', 'neutral': 'True', 'na': '0', 'system': 'solv.gro'}
+
+EM	 mdp input
+	 {'emtol': '100.0', 'emstep': '0.001', 'file_name': 'em.mdp', 'nsteps': '5000'}
+	 run input
+	 {'run_file': 'runmd.sh', 'system': 'ion.gro', 'output': 'em2'}
+
+MD	 mdp input
+	 {'dt': '0.002', 'file_name': 'dock.mdp', 'press': '1', 'nsteps': '5000', 'cont': 'yes', 'temp': '298'}
+	 run input
+	 {'run_file': 'runmd.sh', 'mdp': '.', 'mpi': 'True', 'output': 'dock', 'plumed': 'True', 'plumed_file': 'plumed.dat', 'system': 'em2.gro', 'mpithreads': '8'}
+
