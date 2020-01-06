@@ -10,7 +10,7 @@ gromacsBuilding was made using python 3.5.2
 
 import os
 
-def write_submission(file_name, job_name, job_file):
+def write_submission(file_name, job_name, run_file):
     if os.path.isfile(file_name):
         print('!!!Backing up the existing job file!!!')
         os.rename(file_name, 'bck.'+file_name)
@@ -35,7 +35,7 @@ def write_submission(file_name, job_name, job_file):
     job.write('export OMP_NUM_THREADS=6\n')
     job.write('\n')
     job.write('# run\n')
-    job.write('{job_file}'.format(job_file=job_file))
+    job.write('{run_file}'.format(run_file=run_file))
 
 
 def write_run_box(run_file, init_struct, d, output):
