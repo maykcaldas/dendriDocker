@@ -40,7 +40,7 @@ ${PROGRAM} editconf \
 ########## MINIMIZATION ###############
 
 ${PROGRAM} grompp \
-    -f ${MDP}/em.mdp \
+    -f $MDP/em.mdp \
     -c $WORKDIR/box3.gro \
     -p ${TOPO} \
     -maxwarn 5 \
@@ -70,7 +70,7 @@ ${PROGRAM} solvate \
 ##################### ION ######################
 
 ${PROGRAM} grompp \
-	-f ${MDP}/ion.mdp \
+    -f $MDP/ion.mdp \
 	-c $WORKDIR/solv.gro \
 	-p ${TOPO} \
 	-o ion.tpr\
@@ -88,7 +88,7 @@ echo SOL | ${PROGRAM} genion \
 ########## MINIMIZATION ###############
 
 ${PROGRAM} grompp \
-    -f ${MDP}/em.mdp \
+    -f $MDP/em.mdp \
     -c $WORKDIR/ion.gro \
     -p ${TOPO} \
     -maxwarn 5 \
@@ -102,13 +102,12 @@ ${PROGRAM} mdrun \
 
 ${PROGRAM} grompp \
          -f $MDP/dock.mdp \
-         -c $WORKDIR/em2.gro \
+         -c $WORKDIR/dock \
          -p ${TOPO} \
          -maxwarn 2 \
-         -o dock.tpr\
+         -o True.tpr\
 
-mpirun -n 8 $PROGRAM mdrun \
-         -cpo dock.cpt \
-         -deffnm dock\
-         -plumed plumed.dat\
+${PROGRAM} mdrun \
+         -cpo True.cpt \
+         -deffnm True\
 
