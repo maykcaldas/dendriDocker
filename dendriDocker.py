@@ -76,12 +76,12 @@ def main():
     print("\n")    
 
     # create workflow based on an external file
-    workflow=sysBuilding.gromacsBuilding.read_input(args['workflow'])   
+    # workflow=sysBuilding.gromacsBuilding.read_input(args['workflow'])   
     # create workflow using dendridocker parameters
-    # create_workflow(args) 
+    workflow=create_workflow(args) 
 
-    sysBuilding.writeMDP.write_mdp(workflow)
-    sysBuilding.writeRun.write_run(run_file=args['runOut'], workdir=".", program=args["gmxPath"], init_struct=args["dendCoord"], topo=args["topolOut"], mdp=args["mdpPath"], workflow=workflow)
+    sysBuilding.writeMDP.write_mdp(workflow, args['mdpPath'])
+    sysBuilding.writeRun.write_run(run_file=args['runOut'], workdir=".", program=args["gmxPath"], init_struct=args["dendCoord"], topo=args["topolOut"], mdpPath=args["mdpPath"], workflow=workflow)
     sysBuilding.writeRun.write_submission(file_name="runjob", job_name="TEST1", job_file="./runmd.sh")
 
     prt=printer()
