@@ -6,5 +6,4 @@
 --mdpPath ./mdp
 --sub_file runjob
 --job_name QuercetinG0
---job_file runmd.sh
 --workflow workflow.inp
