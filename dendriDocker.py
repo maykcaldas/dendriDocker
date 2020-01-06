@@ -82,7 +82,7 @@ def main():
 
     sysBuilding.writeMDP.write_mdp(workflow, args['mdpPath'])
     sysBuilding.writeRun.write_run(run_file=args['runOut'], workdir=".", program=args["gmxPath"], init_struct=args["dendCoord"], topo=args["topolOut"], mdpPath=args["mdpPath"], workflow=workflow)
-    sysBuilding.writeRun.write_submission(file_name="runjob", job_name="TEST1", job_file="./runmd.sh")
+    sysBuilding.writeRun.write_submission(file_name="runjob", job_name="TEST1", run_file="./runmd.sh")
 
     prt=printer()
     prt.printPlumedDock(args)
