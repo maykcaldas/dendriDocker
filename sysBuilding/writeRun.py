@@ -131,7 +131,7 @@ def write_run_nvt(run_file, mdp_file, system, output, mpi=True, mpithreads=8):
     run_file.write('\n')
 
 
-def write_run_npt(run_file, mdp_file, mdp, system, output, mpi=True, mpithreads=8):
+def write_run_npt(run_file, mdp_file, system, output, mpi=True, mpithreads=8):
     run_file.write('######## EQUILIBRATION: NPT  ##############\n')
     run_file.write('\n')
     run_file.write('${PROGRAM} grompp \\\n')
@@ -150,7 +150,7 @@ def write_run_npt(run_file, mdp_file, mdp, system, output, mpi=True, mpithreads=
     run_file.write('\n')
 
 
-def write_run_md(run_file, mdp_file, mdp, system, output, mpi=True, mpithreads=8, plumed=True, plumed_file='plumed.dat'):
+def write_run_md(run_file, mdp_file, system, output, mpi=True, mpithreads=8, plumed=True, plumed_file='plumed.dat'):
     run_file.write('########## MOLECULAR DYNAMICS ###############\n')
     run_file.write('\n')
     run_file.write('${PROGRAM} grompp \\\n')
