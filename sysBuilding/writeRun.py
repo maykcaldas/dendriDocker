@@ -173,7 +173,7 @@ def write_run_md(run_file, mdp, system, output, mpi=True, mpithreads=8, plumed=T
     run_file.write('\n')
 
 
-def write_run(run_file, workdir, program, init_struct, topo, mdp, workflow):
+def write_run(run_file, workdir, program, init_struct, topo, mdpPath, workflow):
     if os.path.isfile(run_file):
         print('!!!Backing up the existing run file!!!')
         os.rename(run_file, 'bck.'+run_file)
@@ -188,7 +188,7 @@ def write_run(run_file, workdir, program, init_struct, topo, mdp, workflow):
     run_file.write('WORKDIR=${HERE}\n') #/tmp
     run_file.write('\n')
     run_file.write('TOPO={topo}\n'.format(topo=topo))
-    run_file.write('MDP={mdp}\n'.format(mdp=mdp))
+    run_file.write('MDP={mdpPath}\n'.format(mdpPath=mdpPath))
     run_file.write('\n')
     run_file.write('cd ${HERE}\n')
     # run_file.write('\n')

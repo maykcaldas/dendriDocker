@@ -10,11 +10,11 @@ gromacsBuilding was made using python 3.5.2
 
 import os
 
-def write_mdp_em(file_name, emtol, nsteps, emstep):
-    if os.path.isfile(file_name):
+def write_mdp_em(file_name, mdpPath, emtol, nsteps, emstep):
+    if os.path.isfile(mdpPath+'/'+file_name):
         print('!!!Backing up the existing em file!!!')
-        os.rename(file_name, 'bck.'+file_name)
-    em=open(file_name,'w')
+        os.rename(mdpPath+'/'+file_name, mdpPath+'/'+'bck.'+file_name)
+    em=open(mdpPath+'/'+file_name,'w')
     
     #
     em.write('; minim.mdp - used as input into grompp to generate em.tpr\n')
@@ -43,11 +43,11 @@ def write_mdp_em(file_name, emtol, nsteps, emstep):
     em.write('rlist             = 1.2\n')
 
 
-def write_mdp_nvt(file_name, nsteps, dt, cont, temp):
-    if os.path.isfile(file_name):
+def write_mdp_nvt(file_name, mdpPath, nsteps, dt, cont, temp):
+    if os.path.isfile(mdpPath+'/'+file_name):
         print('!!!Backing up the existing nvt file!!!')
-        os.rename(file_name, 'bck.'+file_name)
-    nvt=open(file_name,'w')
+        os.rename(mdpPath+'/'+file_name, mdpPath+'/'+'bck.'+file_name)
+    nvt=open(mdpPath+'/'+file_name,'w')
     
     nvt.write('title		= PAMAM NVT equilibration\n')
     nvt.write('; Run parameters\n')
@@ -104,11 +104,11 @@ def write_mdp_nvt(file_name, nsteps, dt, cont, temp):
         nvt.write('gen_seed	            = -1		; generate a random seed\n')
 
 
-def write_mdp_ion(file_name):
-    if os.path.isfile(file_name):
+def write_mdp_ion(file_name, mdpPath):
+    if os.path.isfile(mdpPath+'/'+file_name):
         print('!!!Backing up the existing ion file!!!')
-        os.rename(file_name, 'bck.'+file_name)
-    ion=open(file_name,'w')
+        os.rename(mdpPath+'/'+file_name, mdpPath+'/'+'bck.'+file_name)
+    ion=open(mdpPath+'/'+file_name,'w')
 
     ion.write('; ions.mdp - used as input into grompp to generate ions.tpr')
     ion.write('; Parameters describing what to do, when to stop and what to save\n')
@@ -127,11 +127,11 @@ def write_mdp_ion(file_name):
     ion.write('pbc		        = xyz 		; Periodic Boundary Conditions (yes/no)\n')
 
 
-def write_mdp_npt(file_name, nsteps, dt, cont, temp, press):
-    if os.path.isfile(file_name):
+def write_mdp_npt(file_name, mdpPath, nsteps, dt, cont, temp, press):
+    if os.path.isfile(mdpPath+'/'+file_name):
         print('!!!Backing up the existing npt file!!!')
-        os.rename(file_name, 'bck.'+file_name)
-    npt=open(file_name,'w')
+        os.rename(mdpPath+'/'+file_name, mdpPath+'/'+'bck.'+file_name)
+    npt=open(mdpPath+'/'+file_name,'w')
 
     npt.write('title		            = PAMAM NPT equilibration \n')
     npt.write('; Run parameters\n')
@@ -193,11 +193,11 @@ def write_mdp_npt(file_name, nsteps, dt, cont, temp, press):
         npt.write('gen_seed	                = -1		; generate a random seed\n')
 
 
-def write_mdp_md(file_name, nsteps, dt, temp, press):
-    if os.path.isfile(file_name):
+def write_mdp_md(file_name, mdpPath, nsteps, dt, temp, press):
+    if os.path.isfile(mdpPath+'/'+file_name):
         print('!!!Backing up the existing md file!!!')
-        os.rename(file_name, 'bck.'+file_name)
-    md=open(file_name,'w')
+        os.rename(mdpPath+'/'+file_name, mdpPath+'/'+'bck.'+file_name)
+    md=open(mdpPath+'/'+file_name,'w')
 
     md.write('title		= PAMAM Dendrimer G0 in Basic environment simulation\n') 
     md.write('; Run parameters\n')
@@ -255,9 +255,13 @@ def write_mdp_md(file_name, nsteps, dt, temp, press):
     md.write('gen_seed	                = -1		; generate a random seed\n')
 
 
-def write_mdp(workFlow): #, mdpPath):
+def write_mdp(workFlow, mdpPath):
 
-    #check if there is a available mdpPath
+    if not os.path.exists(mdpPath):
+        print("The requested mdpPath ({0}) does not exist. Creating a new one".format(mdpPath))
+        os.system("mkdir -p {mdpPath}".format(mdpPath=mdpPath))
+    else:
+        print("The requested mdpPath ({0}) exists already. It will be used".format(mdpPath))
 
     for step in workFlow:
         if step[0] == "BOX":
@@ -266,45 +270,50 @@ def write_mdp(workFlow): #, mdpPath):
             pass
         elif step[0] == "EM":
             em_file_name=step[1]["file_name"]
+            em_mdpPath=mdpPath
             em_emtol=step[1]["emtol"]
             em_nsteps=step[1]["nsteps"]
             em_emstep=step[1]["emstep"]
             
-            write_mdp_em(em_file_name, em_emtol, em_nsteps, em_emstep)
+            write_mdp_em(em_file_name, em_mdpPath, em_emtol, em_nsteps, em_emstep)
         elif step[0] == "ION":
             ion_file_name=step[1]["file_name"]
+            ion_mdpPath=mdpPath
 
-            write_mdp_ion(ion_file_name)
+            write_mdp_ion(ion_file_name, ion_mdpPath)
         elif step[0] == "INSERT":
             pass
         elif step[0] == "SD":
             write_mdp_sd()
         elif step[0] == "NVT":
             nvt_file_name=step[1]["file_name"]
+            nvt_mdpPath=mdpPath
             nvt_dt=step[1]["dt"]
             nvt_nsteps=step[1]["nsteps"]
             nvt_cont=step[1]["cont"]
             nvt_temp=step[1]["temp"]
             
-            write_mdp_nvt(nvt_file_name, nvt_nsteps, nvt_dt, nvt_cont, nvt_temp)
+            write_mdp_nvt(nvt_file_name, nvt_mdpPath, nvt_nsteps, nvt_dt, nvt_cont, nvt_temp)
         elif step[0] == "NPT":
             npt_file_name=step[1]["file_name"]
+            npt_mdpPath=mdpPath
             npt_dt=step[1]["dt"]
             npt_nsteps=step[1]["nsteps"]
             npt_cont=step[1]["cont"]
             npt_temp=step[1]["temp"]
             npt_press=step[1]["press"]
             
-            write_mdp_npt(npt_file_name, npt_nsteps, npt_dt, npt_cont, npt_temp, npt_press)
+            write_mdp_npt(npt_file_name, npt_mdpPath, npt_nsteps, npt_dt, npt_cont, npt_temp, npt_press)
         elif step[0] == "MD":
             md_file_name=step[1]["file_name"]
+            md_mdpPath=mdpPath
             md_dt=step[1]["dt"]
             md_nsteps=step[1]["nsteps"]
             md_cont=step[1]["cont"]
             md_temp=step[1]["temp"]
             md_press=step[1]["press"]
             
-            write_mdp_md(md_file_name, md_nsteps, md_dt, md_temp, md_press)
+            write_mdp_md(md_file_name, md_mdpPath, md_nsteps, md_dt, md_temp, md_press)
         else:
             error("There is not such mdp process implemented. Please, check your input or contact the developers.")
 

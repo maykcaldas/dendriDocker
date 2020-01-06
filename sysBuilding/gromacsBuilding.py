@@ -127,7 +127,7 @@ def main():
     workFlow=read_input(args['workflow'])
     
     write_log("log.file", workFlow)
-    write_mdp(workFlow)
+    write_mdp(workFlow, mdpPath=args['mdpPath'])
     write_run(run_file=args['run_file'], workdir=args['workdir'], program=args['program'], init_struct=args['init_structure'], topo=args['topo'], mdpPath=args['mdpPath'], workflow=workFlow)
     write_submission(file_name=args['sub_file'], job_name=args['job_name'], job_file=args['job_file'])
 
