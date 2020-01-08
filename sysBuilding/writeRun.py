@@ -87,7 +87,7 @@ def write_run_ion(run_file, mdp_file, system, output, neutral=True, na=0, cl=0):
     run_file.write('	-p ${TOPO} \\\n')
     run_file.write('	-pname NA+ \\\n')
     run_file.write('	-nname CL- \\\n')
-    if neutral == True:
+    if neutral == 'True':
         run_file.write('	-neutral \\\n')
     else:
         run_file.write('	-np  {na} \\\n'.format(na=na))

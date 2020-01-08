@@ -94,7 +94,7 @@ def main():
     os.system('./{0}'.format(args['runOut']))
     os.system('rm -rf \#*')
     
-    print("The run took: {0:.2g} seconds.\n".format(time.time()-startTime))
+    print("The run took: {0:.2g} minutes.\n".format((time.time()-startTime)/60.0))
 
 
 def create_workflow(args):
