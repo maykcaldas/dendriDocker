@@ -49,6 +49,7 @@ def main():
     parser.add_argument('--runOut', help="Output name of the run file", default='run.sh')
     parser.add_argument('--force', help="Force constant of the harmonic potential (or the slope in linear potential) in steered dynamics", default="500.0")
     parser.add_argument('--method', help="Docking method: harmonic, linear, shell, harmonicWall or linearWall", default="harmonic")
+    parser.add_argument('--at', help="The point of the colective variable in which the potential is zero", default="0.0")
     parser.add_argument('--workflow', help="Path to the workflow file", default="workflow.inp")
     args=vars(parser.parse_args())
 

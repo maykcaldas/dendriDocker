@@ -58,19 +58,19 @@ class printer():
         
         if args['method'] == "harmonic":
             for i in range(int(args['nligand'])):
-                f.write('rest_{0}: RESTRAINT ARG=d_{0} AT=1.10 KAPPA={1}\n'.format(i+1, args['force']))
+                f.write('rest_{0}: RESTRAINT ARG=d_{0} AT={1} KAPPA={2}\n'.format(i+1, args['at'] , args['force']))
 
         elif args['method'] == "linear":
             for i in range(int(args['nligand'])):
-                f.write('rest_{0}: RESTRAINT ARG=d_{0} AT=1.10 SLOPE={1}\n'.format(i+1, args['force']))
+                f.write('rest_{0}: RESTRAINT ARG=d_{0} AT={1} SLOPE={2}\n'.format(i+1 , args['at'], args['force']))
         
         elif args['method'] == "harmonicWall":
             for i in range(int(args['nligand'])):
-                f.write('rest_{0}: UPPER_WALLS ARG=d_{0} AT=1.1 KAPPA={1} EXP=2 EPS=2\n'.format(i+1, args['force']))
+                f.write('rest_{0}: UPPER_WALLS ARG=d_{0} AT={1} KAPPA={2} EXP=2 EPS=2\n'.format(i+1, args['at'], args['force']))
         
         elif args['method'] == "linearWall":
             for i in range(int(args['nligand'])):
-                f.write('rest_{0}: UPPER_WALLS ARG=d_{0} AT=0.0 KAPPA={1} EXP=1 EPS=1\n'.format(i+1, args['force']))
+                f.write('rest_{0}: UPPER_WALLS ARG=d_{0} AT={1} KAPPA={2} EXP=1 EPS=1\n'.format(i+1, args['at'], args['force']))
         
         elif args['method'] == "shell":
             for i in range(int(args['nligand'])):
