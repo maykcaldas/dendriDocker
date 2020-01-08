@@ -125,7 +125,7 @@ def create_workflow(args):
     ),
     ('ION', 
         {'file_name': 'ion.mdp'},
-        {'mdp_file': 'ion.mdp', 'system': 'solv.gro', 'output': 'ion', 'neutral':True, 'na':'0', 'cl':'0'}
+        {'mdp_file': 'ion.mdp', 'system': 'solv.gro', 'output': 'ion', 'neutral':'True', 'na':'0', 'cl':'0'}
     ),
     ('EM', 
         {'file_name': 'em.mdp', 'emtol': '100.0', 'nsteps': '5000', 'emstep': '0.001'}, 
@@ -133,7 +133,7 @@ def create_workflow(args):
     ),
     ('MD', 
         {'file_name': 'dock.mdp', 'nsteps': '5000', 'dt': '0.002', 'cont':'yes', 'temp':'298', 'press': '1'}, 
-        {'mdp_file': 'dock.mdp', 'mdp': '.', 'system': 'em2.gro', 'output': 'dock', 'mpi': False, 'mpithreads': '8', "plumed": True, "plumed_file": args["dockOut"]}
+        {'mdp_file': 'dock.mdp', 'mdp': '.', 'system': 'em2.gro', 'output': 'dock', 'mpi': 'False', 'mpithreads': '8', "plumed": 'True', "plumed_file": args["dockOut"]}
     ),
     ]
 
