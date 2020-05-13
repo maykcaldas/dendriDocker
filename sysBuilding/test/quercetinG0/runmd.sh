@@ -9,7 +9,7 @@ WORKDIR=${HERE}
 TOPO=topol.top
 MDP=./mdp
 
-cd ${HERE}
+cd ${WORKDIR}
 
 
 ########## MINIMIZATION ###############
@@ -87,6 +87,5 @@ ${PROGRAM} grompp \
          -o md.tpr\
 
 mpirun -n 2 $PROGRAM mdrun \
-         -v \
          -deffnm md\
 
