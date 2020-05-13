@@ -44,7 +44,7 @@ def write_run_box(run_file, mdp_file, init_struct, d, output):
     run_file.write('${PROGRAM} editconf \\\n')
     run_file.write('        -f ${HERE}/{init_struct} \\\n'.format(HERE="HERE",init_struct=init_struct))
     run_file.write('        -c \\\n')
-    run_file.write('        -d {d} \\\n'.format(d=d))
+#    run_file.write('        -d {d} \\\n'.format(d=d))
     run_file.write('        -bt cubic \\\n')
     run_file.write('        -o {output}.gro\\\n'.format(output=output))
     run_file.write('\n')
@@ -78,6 +78,7 @@ def write_run_ion(run_file, mdp_file, system, output, neutral=True, na=0, cl=0):
     run_file.write('    -f ${MDP}/{mdp} \\\n'.format(MDP="MDP", mdp=mdp_file))
     run_file.write('	-c ${WORKDIR}/{system} \\\n'.format(WORKDIR="WORKDIR", system=system))
     run_file.write('	-p ${TOPO} \\\n')
+    run_file.write('	-maxwarn 2 \\\n')
     run_file.write('	-o {output}.tpr\\\n'.format(output=output))
     run_file.write('\n')
     run_file.write('\n')
@@ -145,7 +146,6 @@ def write_run_npt(run_file, mdp_file, system, output, mpi=True, mpithreads=8):
         run_file.write('mpirun -n {mpithreads} ${PROGRAM} mdrun \\\n'.format(mpithreads=mpithreads, PROGRAM="PROGRAM"))
     else:
         run_file.write('${PROGRAM} mdrun \\\n')
-    # run_file.write('         -s npt.tpr \\\n')
     run_file.write('         -deffnm {output}\\\n'.format(output=output))
     run_file.write('\n')
 
@@ -164,9 +164,7 @@ def write_run_md(run_file, mdp_file, system, output, mpi=True, mpithreads=8, plu
         run_file.write('mpirun -n {mpithreads} ${PROGRAM} mdrun \\\n'.format(mpithreads=mpithreads, PROGRAM="PROGRAM"))
     else:
         run_file.write('${PROGRAM} mdrun \\\n')
-    # run_file.write('        -s md.tpr \\\n')
-    # run_file.write('         -cpi state.cpt \\\n')
-    run_file.write('         -cpo {output}.cpt \\\n'.format(output=output))
+    # run_file.write('         -cpo {output}.cpt \\\n'.format(output=output))
     run_file.write('         -deffnm {output}\\\n'.format(output=output))
     if plumed=='True':
         run_file.write('         -plumed {plumed_file}\\\n'.format(plumed_file=plumed_file))
@@ -185,20 +183,12 @@ def write_run(run_file, workdir, program, init_struct, topo, mdpPath, workflow):
     run_file.write('\n')
     run_file.write('HERE={workdir}\n'.format(workdir=workdir))
     run_file.write('PROGRAM={program}\n'.format(program=program))
-    run_file.write('WORKDIR=${HERE}\n') #/tmp
+    run_file.write('WORKDIR=${HERE}\n')
     run_file.write('\n')
     run_file.write('TOPO={topo}\n'.format(topo=topo))
     run_file.write('MDP={mdpPath}\n'.format(mdpPath=mdpPath))
     run_file.write('\n')
-    run_file.write('cd ${HERE}\n')
-    # run_file.write('\n')
-    # run_file.write('mkdir -p ${WORKDIR}\n')
-    # run_file.write('cp ${HERE}/topol.top ${WORKDIR}\n')
-    # run_file.write('cp ${HERE}/dock.gro ${WORKDIR}/dock.gro\n')
-    # run_file.write('cp ${HERE}/PAMAM_G0_Neutral.itp ${WORKDIR}\n')
-    # run_file.write('cp ${HERE}/quercetin.itp ${WORKDIR}\n')
-    # run_file.write('#cp ${HERE}/plumed.dat ${WORKDIR}\n')
-    # run_file.write('cd ${WORKDIR}\n')
+    run_file.write('cd ${WORKDIR}\n')
     run_file.write('\n')
     run_file.write('\n')
     
@@ -242,14 +232,13 @@ def write_run(run_file, workdir, program, init_struct, topo, mdpPath, workflow):
         elif step[0] == "SD":
             pass
         elif step[0] == "NVT":
-            nvt_run_file=step[2]["mdp_file"]
-            nvt_mdp=step[2]["mdp"]
+            nvt_mdp_file=step[2]["mdp_file"]
             nvt_system=step[2]["system"]
             nvt_output=step[2]["output"]
             nvt_mpi=step[2]["mpi"]
             nvt_mpiThreads=step[2]["mpithreads"]
             
-            write_run_nvt(run_file, nvt_mdp, nvt_system, nvt_output, nvt_mpi, nvt_mpiThreads)
+            write_run_nvt(run_file, nvt_mdp_file, nvt_system, nvt_output, nvt_mpi, nvt_mpiThreads)
         elif step[0] == "NPT":
             npt_mdp_file=step[2]["mdp_file"]
             npt_system=step[2]["system"]

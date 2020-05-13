@@ -129,40 +129,42 @@ def main():
     write_mdp(workFlow, mdpPath=args['mdpPath'])
     write_run(run_file=args['run_file'], workdir=args['workdir'], program=args['program'], init_struct=args['init_structure'], topo=args['topo'], mdpPath=args['mdpPath'], workflow=workFlow)
     write_submission(file_name=args['sub_file'], job_name=args['job_name'], run_file=args['run_file'])
+    os.system('chmod u+x {0}'.format(args['run_file']))
 
+# deprecated method for creatign the workflow. Now it's readed from a external file
+# it's still used in a own dendriDocker method
+# def create_workFlow():
+#     workflow = [('BOX', 
+#         {'file_name': None},
+#         {'run_file': 'test/runmd.sh', 'init_struct': 'PAMAM_G0_Neutral.gro', 'd': '1.0', 'output': 'box'}
+#     ),
+#     (SOLVATE, 
+#         {'file_name': None},
+#         {'run_file':'runmd.sh', 'system': 'box.gro', 'output': 'solv'}
+#     ),
+#     ('ION', 
+#         {'file_name': 'None'},
+#         {'run_file': 'runmd.sh', 'system': 'box', 'output': 'ion', 'neutral':True, 'na':'0', 'cl':'0'}
+#     ),
+#     ('EM', 
+#         {'file_name': 'em.mdp', 'emtol': '100.0', 'nsteps': '5000', 'emstep': '0.001'}, 
+#         {'run_file': 'runmd.sh', 'system': 'ion', 'output': 'em1'}
+#     ),
+#     ('NVT', 
+#         {'file_name': 'nvt100.mdp', 'nsteps': '25000000', 'dt': '0.002', 'cont':'no', 'temp':'100'}, 
+#         {'run_file': 'runmd.sh', 'mdp': 'path/to/mdp', 'system': 'em1', 'output': 'nvt100', 'mpi': True, 'mpithreads': '8'}
+#     ),
+#     ('NPT', 
+#         {'file_name': 'npt100.mdp', 'nsteps': '100000', 'dt': '0.002', 'cont':'yes', 'temp':'100', 'press': '1'}, 
+#         {'run_file': 'runmd.sh', 'mdp': 'path/to/mdp', 'system': 'nvt100', 'output': 'npt100', 'mpi': True, 'mpithreads': '8'}
+#     ),
+#     ('MD', 
+#         {'file_name': 'md.mdp', 'nsteps': '100000', 'dt': '0.002', 'cont':'yes', 'temp':'298', 'press': '1'}, 
+#         {'run_file': 'runmd.sh', 'mdp': 'path/to/mdp', 'system': 'npt100', 'output': 'md', 'mpi': True, 'mpithreads': '8', 'plumed': True, 'plumed_file': 'plumed.dat'}
+#     ),
+#     ]
 
-def create_workFlow():
-    workflow = [('BOX', 
-        {'file_name': None},
-        {'run_file': 'test/runmd.sh', 'init_struct': 'PAMAM_G0_Neutral.gro', 'd': '1.0', 'output': 'box'}
-    ),
-    (SOLVATE, 
-        {'file_name': None},
-        {'run_file':'runmd.sh', 'system': 'box.gro', 'output': 'solv'}
-    ),
-    ('ION', 
-        {'file_name': 'None'},
-        {'run_file': 'runmd.sh', 'system': 'box', 'output': 'ion', 'neutral':True, 'na':'0', 'cl':'0'}
-    ),
-    ('EM', 
-        {'file_name': 'em.mdp', 'emtol': '100.0', 'nsteps': '5000', 'emstep': '0.001'}, 
-        {'run_file': 'runmd.sh', 'system': 'ion', 'output': 'em1'}
-    ),
-    ('NVT', 
-        {'file_name': 'nvt100.mdp', 'nsteps': '25000000', 'dt': '0.002', 'cont':'no', 'temp':'100'}, 
-        {'run_file': 'runmd.sh', 'mdp': 'path/to/mdp', 'system': 'em1', 'output': 'nvt100', 'mpi': True, 'mpithreads': '8'}
-    ),
-    ('NPT', 
-        {'file_name': 'npt100.mdp', 'nsteps': '100000', 'dt': '0.002', 'cont':'yes', 'temp':'100', 'press': '1'}, 
-        {'run_file': 'runmd.sh', 'mdp': 'path/to/mdp', 'system': 'nvt100', 'output': 'npt100', 'mpi': True, 'mpithreads': '8'}
-    ),
-    ('MD', 
-        {'file_name': 'md.mdp', 'nsteps': '100000', 'dt': '0.002', 'cont':'yes', 'temp':'298', 'press': '1'}, 
-        {'run_file': 'runmd.sh', 'mdp': 'path/to/mdp', 'system': 'npt100', 'output': 'md', 'mpi': True, 'mpithreads': '8', 'plumed': True, 'plumed_file': 'plumed.dat'}
-    ),
-    ]
-
-    return workflow
+#     return workflow
 
 
 def error(message):

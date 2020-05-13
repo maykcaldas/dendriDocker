@@ -67,7 +67,7 @@ def write_mdp_nvt(file_name, mdpPath, nsteps, dt, cont, temp):
     nvt.write('lincs_iter	        = 1		    ; accuracy of LINCS\n')
     nvt.write('lincs_order	        = 4		    ; also related to accuracy\n')
     nvt.write('; Neighborsearching\n')
-    nvt.write('cutoff-schnvte       = Verlet\n')
+    nvt.write('cutoff-scheme       = Verlet\n')
     nvt.write('rlist                = 1.2\n')
     nvt.write('ns_type		        = grid		; search neighboring grid cells\n')
     nvt.write('nstlist		        = 10	    ; 20 fs, largely irrelevant with Verlet schnvte\n')
