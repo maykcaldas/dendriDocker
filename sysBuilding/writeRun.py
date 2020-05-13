@@ -71,7 +71,7 @@ def write_run_solvate(run_file, mdp_file, system, output):
     run_file.write('\n')
 
 
-def write_run_ion(run_file, mdp_file, system, output, neutral=True, na=0, cl=0):
+def write_run_ion(run_file, mdp_file, system, output, neutral='True', na=0, cl=0):
     run_file.write('##################### ION ######################\n')
     run_file.write('\n')
     run_file.write('${PROGRAM} grompp \\\n')
@@ -114,7 +114,7 @@ def write_run_em(run_file, mdp_file, system, output):
     run_file.write('\n')
 
 
-def write_run_nvt(run_file, mdp_file, system, output, mpi=True, mpithreads=8):
+def write_run_nvt(run_file, mdp_file, system, output, mpi='True', mpithreads=8):
     run_file.write('######### EQUILIBRATION: NVT  ############\n')
     run_file.write('\n')
     run_file.write('${PROGRAM} grompp \\\n')
@@ -124,7 +124,7 @@ def write_run_nvt(run_file, mdp_file, system, output, mpi=True, mpithreads=8):
     run_file.write('         -maxwarn 2 \\\n')
     run_file.write('         -o {output}.tpr\\\n'.format(output=output))
     run_file.write('\n')
-    if mpi==True:
+    if mpi=='True':
         run_file.write('mpirun -n {mpithreads} ${PROGRAM} mdrun \\\n'.format(mpithreads=mpithreads, PROGRAM="PROGRAM"))
     else:
         run_file.write('${PROGRAM} mdrun \\\n')
@@ -132,7 +132,7 @@ def write_run_nvt(run_file, mdp_file, system, output, mpi=True, mpithreads=8):
     run_file.write('\n')
 
 
-def write_run_npt(run_file, mdp_file, system, output, mpi=True, mpithreads=8):
+def write_run_npt(run_file, mdp_file, system, output, mpi='True', mpithreads=8):
     run_file.write('######## EQUILIBRATION: NPT  ##############\n')
     run_file.write('\n')
     run_file.write('${PROGRAM} grompp \\\n')
@@ -142,7 +142,7 @@ def write_run_npt(run_file, mdp_file, system, output, mpi=True, mpithreads=8):
     run_file.write('         -maxwarn 2 \\\n')
     run_file.write('         -o {output}.tpr\\\n'.format(output=output))
     run_file.write('\n')
-    if mpi==True:
+    if mpi=='True':
         run_file.write('mpirun -n {mpithreads} ${PROGRAM} mdrun \\\n'.format(mpithreads=mpithreads, PROGRAM="PROGRAM"))
     else:
         run_file.write('${PROGRAM} mdrun \\\n')
@@ -150,7 +150,7 @@ def write_run_npt(run_file, mdp_file, system, output, mpi=True, mpithreads=8):
     run_file.write('\n')
 
 
-def write_run_md(run_file, mdp_file, system, output, mpi=True, mpithreads=8, plumed=True, plumed_file='plumed.dat'):
+def write_run_md(run_file, mdp_file, system, output, mpi='True', mpithreads=8, plumed='True', plumed_file='plumed.dat'):
     run_file.write('########## MOLECULAR DYNAMICS ###############\n')
     run_file.write('\n')
     run_file.write('${PROGRAM} grompp \\\n')
