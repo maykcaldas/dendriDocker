@@ -176,7 +176,7 @@ def write_mdp_npt(file_name, mdpPath, nsteps, dt, cont, temp, press):
     npt.write('pcoupl		            = Berendsen	    ; Pressure coupling on in NPT\n')
     npt.write('pcoupltype	            = isotropic	            ; uniform scaling of box vectors\n')
     npt.write('tau_p		            = 2.0		            ; time constant, in ps\n')
-    npt.write('ref_p		            = {press}		            ; reference pressure, in bar'.format(press=press))
+    npt.write('ref_p		            = {press}		            ; reference pressure, in bar\n'.format(press=press))
     npt.write('compressibility          = 4.5e-5	            ; isothermal compressibility of water, bar^-1\n')
     npt.write('refcoord_scaling         = com\n')
     npt.write('; Periodic boundary conditions\n')
