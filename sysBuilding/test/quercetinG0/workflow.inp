@@ -6,31 +6,31 @@ run_input
 
 NVT
 mdp_input
-    file_name: nvt100.mdp, nsteps: 100000, dt: 0.002, cont:yes, temp:100 
+    file_name: nvt100.mdp, nsteps: 100000, dt: 0.002, cont:yes, temp:100
 run_input
-    run_file: runmd.sh, mdp_file: nvt100.mdp, system: em, output: nvt100, mpi: True, mpithreads: 2
-NVT
-mdp_input
-    file_name: nvt200.mdp, nsteps: 100000, dt: 0.002, cont:yes, temp:200 
-run_input
-    run_file: runmd.sh, mdp_file: nvt200.mdp, system: nvt100.gro, output: nvt200, mpi: True, mpithreads: 2
+    run_file: runmd.sh, mdp_file: nvt100.mdp, system: em, output: nvt100, mpi: True, mpithreads: 8
 
 NVT
 mdp_input
-    file_name: nvt300.mdp, nsteps: 100000, dt: 0.002, cont:yes, temp:300 
+    file_name: nvt200.mdp, nsteps: 100000, dt: 0.002, cont:yes, temp:200
 run_input
-    run_file: runmd.sh, mdp_file: nvt300.mdp, system: nvt200.gro, output: nvt300, mpi: True, mpithreads: 2
+    run_file: runmd.sh, mdp_file: nvt200.mdp, system: nvt100.gro, output: nvt200, mpi: True, mpithreads: 8
+
+NVT
+mdp_input
+    file_name: nvt300.mdp, nsteps: 100000, dt: 0.002, cont:yes, temp:300
+run_input
+    run_file: runmd.sh, mdp_file: nvt300.mdp, system: nvt200.gro, output: nvt300, mpi: True, mpithreads: 8
 
 NPT
 mdp_input
     file_name: npt300.mdp, nsteps: 100000, dt: 0.002, cont:yes, temp:300, press: 1
 run_input
-    run_file: runmd.sh, mdp_file: npt300.mdp, system: nvt300, output: npt300, mpi: True, mpithreads: 2
+    run_file: runmd.sh, mdp_file: npt300.mdp, system: nvt300, output: npt300, mpi: True, mpithreads: 8
 
-MD 
+MD
 mdp_input
-    file_name: dock.mdp, nsteps: 100000, dt: 0.002, cont:yes, temp:310, press: 1
+    file_name: md.mdp, nsteps: 500000000, dt: 0.002, cont:yes, temp:310, press: 1
 run_input
-    mdp_file: md.mdp, system: npt300.gro, output: md, mpi: True, mpithreads: 2, plumed: False, plumed_file: plumed.dat
-
+    mdp_file: md.mdp, system: npt300.gro, output: md, mpi: True, mpithreads: 8, plumed: False, plumed_file: plumed.dat
 
