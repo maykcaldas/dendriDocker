@@ -1,6 +1,6 @@
 --run_file runmd.sh
 --workdir .
---program /home/mayk/programs/gromacs-5.1.4/install/bin/gmx
+--program /home/kyam/Programs/gromacs-2019.4/install/bin/gmx_mpi
 --init_structure dock.gro
 --topo topol.top
 --mdpPath ./mdp
