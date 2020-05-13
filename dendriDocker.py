@@ -51,6 +51,8 @@ def main():
     parser.add_argument('--method', help="Docking method: harmonic, linear, shell, harmonicWall or linearWall", default="harmonic")
     parser.add_argument('--at', help="The point of the colective variable in which the potential is zero", default="0.0")
     parser.add_argument('--workflow', help="Path to the workflow file", default="workflow.inp")
+    parser.add_argument('--nn', help="Path to the workflow file", default="0")
+    parser.add_argument('--np', help="Path to the workflow file", default="0")
     args=vars(parser.parse_args())
 
     #Getting the atomInDend
@@ -126,14 +128,14 @@ def create_workflow(args):
     ),
     ('ION', 
         {'file_name': 'ion.mdp'},
-        {'mdp_file': 'ion.mdp', 'system': 'solv.gro', 'output': 'ion', 'neutral':'True', 'na':'0', 'cl':'0'}
+        {'mdp_file': 'ion.mdp', 'system': 'solv.gro', 'output': 'ion', 'neutral':'False', 'na':args['np'], 'cl':args['nn']}
     ),
     ('EM', 
         {'file_name': 'em.mdp', 'emtol': '100.0', 'nsteps': '5000', 'emstep': '0.001'}, 
         {'mdp_file': 'em.mdp', 'system': 'ion.gro', 'output': 'em2'}
     ),
     ('MD', 
-        {'file_name': 'dock.mdp', 'nsteps': '5000', 'dt': '0.002', 'cont':'yes', 'temp':'298', 'press': '1'}, 
+        {'file_name': 'dock.mdp', 'nsteps': '100000', 'dt': '0.002', 'cont':'yes', 'temp':'298', 'press': '1'}, 
         {'mdp_file': 'dock.mdp', 'mdp': '.', 'system': 'em2.gro', 'output': 'dock', 'mpi': 'False', 'mpithreads': '8', "plumed": 'True', "plumed_file": args["dockOut"]}
     ),
     ]
