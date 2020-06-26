@@ -128,7 +128,7 @@ def create_workflow(args):
     ),
     ('ION', 
         {'file_name': 'ion.mdp'},
-        {'mdp_file': 'ion.mdp', 'system': 'solv.gro', 'output': 'ion', 'neutral':'False', 'na':args['np'], 'cl':args['nn']}
+        {'mdp_file': 'ion.mdp', 'system': 'solv.gro', 'output': 'ion', 'neutral':'True', 'na':args['np'], 'cl':args['nn']}
     ),
     ('EM', 
         {'file_name': 'em.mdp', 'emtol': '100.0', 'nsteps': '5000', 'emstep': '0.001'}, 

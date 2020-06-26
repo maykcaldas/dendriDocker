@@ -45,6 +45,7 @@ def write_run_box(run_file, mdp_file, init_struct, d, output):
     run_file.write('        -f ${HERE}/{init_struct} \\\n'.format(HERE="HERE",init_struct=init_struct))
     run_file.write('        -c \\\n')
 #    run_file.write('        -d {d} \\\n'.format(d=d))
+    run_file.write('        -box 10.0 10.0 10.0 \\\n')
     run_file.write('        -bt cubic \\\n')
     run_file.write('        -o {output}.gro\\\n'.format(output=output))
     run_file.write('\n')
@@ -166,6 +167,8 @@ def write_run_md(run_file, mdp_file, system, output, mpi='True', mpithreads=8, p
         run_file.write('${PROGRAM} mdrun \\\n')
     # run_file.write('         -cpo {output}.cpt \\\n'.format(output=output))
     run_file.write('         -deffnm {output}\\\n'.format(output=output))
+    run_file.write('         -cpi    {output}\\\n'.format(output=output))
+    run_file.write('         -cpo    {output}\\\n'.format(output=output))
     if plumed=='True':
         run_file.write('         -plumed {plumed_file}\\\n'.format(plumed_file=plumed_file))
     run_file.write('\n')
